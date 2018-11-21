@@ -1,0 +1,25 @@
+{
+  "name": "Api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
+    "boom": "^7.2.2",
+    "good": "^8.1.1",
+    "hapi": "^17.7.0",
+    "hapi-error": "^2.1.0",
+    "joi": "^14.0.6",
+    "knex": "^0.15.2",
+    "mysql": "^2.16.0",
+    "querystring": "^0.2.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
+  },
+  "scripts": {
+    "start": "nodemon --inspect --exec babel-node server.js"
+  }
+}
