@@ -3,8 +3,8 @@ const Joi = require('joi');
 const Boom = require('boom');
 var request = require('request-promise'); 
 var querystring = require('querystring');
-var client_id = ''; // Your client id
-var client_secret = ''; // Your secret
+var client_id = 'fc54277fa14147e28e480b04a5b3da31'; // Your client id
+var client_secret = '658d68c610754dc79cb465b21e572910'; // Your secret
 var redirect_uri = 'http://localhost:3000/callback/';
 
 var stateKey = 'spotify_auth_state';
@@ -129,19 +129,24 @@ const spotifyCallback = async (req, h) => {
                 var access_token = body.access_token,
                     refresh_token = body.refresh_token;
 
-                var options = {
-                    url: 'https://api.spotify.com/v1/me',
-                    headers: { 'Authorization': 'Bearer ' + access_token },
-                    json: true
-                };
+                // var options = {
+                //     url: 'https://api.spotify.com/v1/me',
+                //     headers: { 'Authorization': 'Bearer ' + access_token },
+                //     json: true
+                // };
 
                 // use the access token to access the Spotify Web API
-                let me = await request.get(options);
+                //let me = await request.get(options);
+                h.state('data', {
+                    access_token: access_token,
+                    refresh_token: refresh_token
+                });
 
-                h.state('access_token', access_token);
-                h.state('refresh_token', refresh_token);
+               
+           
    
-                return h.response(me);
+                return h.redirect(`http://localhost:3001/profile/${access_token}/${refresh_token}`)
+
             } else {
 
                 // return h.response('something went wong');

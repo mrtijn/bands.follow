@@ -10,12 +10,14 @@ const app = Hapi.server({
     port: 3000,
     host: 'localhost',
     routes: {
-        cors: { origin: ['*'] }
+        cors: { 
+            origin: ['*'],
+            additionalHeaders: ['cache-control', 'x-requested-with', 'token'] 
+        }
     }
 });
 
 
-app.route(routes);
 
 const goodOptions = {
     ops: {
@@ -56,6 +58,7 @@ const goodOptions = {
 };
 
 
+
 const init = async () => {
 
     await app.register({
@@ -63,6 +66,15 @@ const init = async () => {
         goodOptions,
     });    
     await app.register(require('hapi-error'));
+    await app.register(require('./plugins/spotify'));
+
+    app.route(routes);
+    app.state('data', {
+        ttl: 1000 * 60 * 60 * 24,
+        encoding: 'base64json',
+    });
+
+
     await app.start();
     console.log(`Server running at: ${app.info.uri}`);
 };
