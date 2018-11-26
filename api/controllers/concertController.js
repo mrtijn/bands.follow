@@ -2,6 +2,9 @@ import Boom from 'boom';
 import Joi from 'joi';
 import db from '../db'
 
+import Concerts from '../models/concert';
+
+
 
 const createConcert = {
     validate: {
@@ -50,8 +53,19 @@ const createConcert = {
 
 const getConcerts = {
     async handler(req, h) {
-        let data = await db.select('*').from('concerts');
-        return h.response(data).code(200);
+        console.log('go2')
+        try {
+            let concerts = await new Concerts().fetchAll({ withRelated: 'artists' });
+            return h.response(concerts);
+        } catch (e) {
+            return Boom.badRequest('Something went wrong!');
+        }
+        
+
+        // console.log(test);
+
+        // let data = await db.select('*').from('concerts');
+        // return h.response(data).code(200);
     }
 }
 

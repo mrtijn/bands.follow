@@ -1,5 +1,5 @@
 import { createUser, spotifyLogin, spotifyCallback } from './controllers/userController';
-import { createConcert } from './controllers/concertController';
+import { createConcert, getConcerts } from './controllers/concertController';
 import { createArtist, getArtists } from './controllers/artistController';
 import * as Spotify from './controllers/spotifyController';
 const routes = [
@@ -24,6 +24,11 @@ const routes = [
         method: 'GET',
         path: '/artists',
         handler: getArtists.handler
+    },
+    {
+        method: 'GET',
+        path: '/concerts',
+        handler: getConcerts.handler
     },
     {
         method: 'POST',

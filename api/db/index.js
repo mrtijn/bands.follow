@@ -1,5 +1,11 @@
 import knex from 'knex';
 import config from '../knexfile.js';
 
+let knexInstance = knex(config);
+export default knexInstance
 
-export default knex(config);
+
+
+const bookshelf = require('bookshelf')(knexInstance);
+export {bookshelf};
+
