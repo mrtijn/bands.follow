@@ -30,15 +30,17 @@ export default class Index extends React.Component {
     }
     render () {
         return (
-            <div>
-                
-
-                <h2>Concerts: </h2>
-                <ListConcerts />
-
-                <h3>Add concert</h3>
-                <CreateConcert />
+            <div className="l-concerts">
                 <Link to="/"> Back to home </Link>
+
+                <h2 className="l-concerts__title">Concerts: </h2>
+                <ListConcerts />
+                <div className="l-concerts__new-concert">
+                    <h3>Add concert</h3>
+                    <CreateConcert />
+                    
+                </div>
+                
             </div>
         )
     }

@@ -24,11 +24,16 @@ class ListConcerts extends Component {
         const concerts = this.state.concerts;
         
         return ( 
-            <ul>
+            <ul className="c-list-concert">
                 {
                     concerts.map(concert => {
-                        let artists = concert.artists.map(artist => <i key={artist.id}>{artist.name} </i>)
-                        return (<li key={concert.id}>{concert.name} {artists}</li>)
+                        let artists = concert.artists.map((artist, idx) => {
+                            let artistString = artist.name;
+                            
+                            if (idx !== concert.artists.length - 1) artistString += ', ';
+                            return artistString;
+                        })
+                        return (<li key={concert.id}><h4>{artists} </h4><span>{concert.location}</span></li>)
                     })
                 }
         

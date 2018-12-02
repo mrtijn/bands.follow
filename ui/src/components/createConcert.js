@@ -24,14 +24,11 @@ class createConcert extends Component {
  
     }
     handleChange(e){
-        console.log('handlefield')
         const form = {...this.state.form};
         form[e.target.name] = e.target.value;
         this.setState({form});
     }
     handleSelect(e) {
-        console.log('handleSelect')
-        console.log(e.target.value);
         const form = { ...this.state.form };
         form[e.target.name].push(e.target.value);
         this.setState({ form });
@@ -40,13 +37,13 @@ class createConcert extends Component {
         e.preventDefault();
 
         let form = this.state.form;
-        console.log(this.state.form);
+
         let concert = await api.post('/concert/create', form);
-        console.log(concert);
+
 
     }
     async getArtists(){
-        console.log('get')
+
         try {
             const { data } = await api.get('/artists');
     
@@ -64,20 +61,41 @@ class createConcert extends Component {
     }
     render(){
         let artists = this.state.artists;
-        console.log(artists);
+
         return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    <input type="text" value={this.state.form.name} name="name" onChange={this.handleChange} placeholder="Name" />
-                    <input type="text" value={this.state.form.location} name="location" onChange={this.handleChange} placeholder="Location" />
-                    <input type="date" value={this.state.form.date} name="date" onChange={this.handleChange} placeholder="Date" />
-                    <select name="artists"  onChange={this.handleSelect} >
-                        {
-                            artists.map(artist => <option key={artist.id} value={artist.id}>{artist.name}</option>)
-                        }
-                    </select>
-                    <Link to="/artist/create"> (Add artist) </Link>
-                    <button>Add concert</button>
+            <div className="c-create-concert ">
+                <form className="c-form" onSubmit={this.handleSubmit}>
+                    <div className="columns">
+                        <div className="column ">
+                            <div className="field">
+                                <div className="control select">
+                                    <select required name="artists" onChange={this.handleSelect} >
+                                        <option selected disabled>Select artist</option>
+                                        {
+                                            artists.map(artist => <option key={artist.id} value={artist.id}>{artist.name}</option>)
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="column">
+                            <input type="text" required value={this.state.form.name} name="name" onChange={this.handleChange} placeholder="Name" />
+                        </div>
+                    </div>
+                    <div className="columns">
+                        <div className="column">
+                            <input type="text" required value={this.state.form.location} name="location" onChange={this.handleChange} placeholder="Location" />
+                        </div>
+                        <div className="column">
+                            <input type="date" required value={this.state.form.date} name="date" onChange={this.handleChange} placeholder="Date" />
+                        </div>
+                    </div>
+
+
+
+                    <Link className="c-btn c-btn--secondary" to="/artist/create"> Add artist </Link>
+                    <button className="c-btn c-btn--primary">Add concert</button>
                 </form>
             </div>
         )

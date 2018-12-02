@@ -1,0 +1,12 @@
+.c-form{
+    margin-bottom: 20px;
+
+    input, textarea{
+        padding: 10px;
+        margin-right: 10px;
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid $white;
+        color: $white;
+    }
+}

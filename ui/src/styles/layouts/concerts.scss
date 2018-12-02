@@ -1,0 +1,16 @@
+.l-concerts{
+    &__title{
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    &__new-concert{
+        background-color: lighten($black, 2%);
+        padding: 20px;
+        margin-top: 20px;
+       h3{
+        margin-bottom: 15px;
+       }
+
+    }
+}

@@ -3,12 +3,9 @@ import { Link } from 'react-router-dom';
 
 export default () => {
     return (
-        <ul>
+        <ul className="c-navigation">
             <li>
-                <Link to="/artist/create"> Create artist </Link>
-            </li>
-            <li>
-                <Link to="/concert/create"> Create concert </Link>
+                <Link to="/concerts">Concerts </Link>
             </li>
         </ul>
     )

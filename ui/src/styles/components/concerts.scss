@@ -1,0 +1,24 @@
+.c-create-concert{
+    max-width: 600px;
+}
+.c-list-concert{
+
+    list-style: none;
+    padding: 0;
+    li{
+        padding:  40px 25px;
+        border-bottom: 1px solid $white;
+
+        h4{
+            display: block;
+            margin-bottom: 4px;
+            color: $white;
+            font-weight: 300;
+            font-size: 32px;
+        }
+
+        span{
+            font-size: 12px;
+        }
+    }
+}
