@@ -3,14 +3,17 @@ import { Link } from 'react-router-dom';
 import api from '../api';
 class createConcert extends Component {
     constructor(props){
-        super(props)
+        super(props);
+
+        this.defaultForm = {
+            location: '',
+            artists: [],
+            date: ''
+        };
+
+
         this.state = {
-            form : {
-                name: '',
-                location: '',
-                artists: [],
-                date: ''
-            },
+            form: {...this.defaultForm},
             artists: []
         }
     
@@ -30,6 +33,7 @@ class createConcert extends Component {
     }
     handleSelect(e) {
         const form = { ...this.state.form };
+        
         form[e.target.name].push(e.target.value);
         this.setState({ form });
     }
@@ -37,8 +41,19 @@ class createConcert extends Component {
         e.preventDefault();
 
         let form = this.state.form;
+        console.log(form);
+        try {
+            let concert = await api.post('/concert/create', form);
+            this.props.onConcertAdded(concert.data);
+ 
+            this.setState({ form: { ...this.defaultForm, artists: []}});
+            console.log(this.state);
+            console.log('Concert added');
 
-        let concert = await api.post('/concert/create', form);
+        } catch (error) {
+            alert('Concert creation failed');
+        }
+        
 
 
     }
@@ -48,7 +63,7 @@ class createConcert extends Component {
             const { data } = await api.get('/artists');
     
             this.setState({artists: data});
-      
+            
         } catch (e) {
             console.error('Could not get artists');
         }
@@ -69,21 +84,15 @@ class createConcert extends Component {
                         <div className="column ">
                             <div className="field">
                                 <div className="control select">
-                                    <select required name="artists" onChange={this.handleSelect} >
-                                        <option selected disabled>Select artist</option>
+                                    <select required defaultValue="" name="artists" onChange={this.handleSelect} >
+                                        <option value=""  disabled>Select artist</option>
                                         {
                                             artists.map(artist => <option key={artist.id} value={artist.id}>{artist.name}</option>)
                                         }
                                     </select>
                                 </div>
                             </div>
-
                         </div>
-                        <div className="column">
-                            <input type="text" required value={this.state.form.name} name="name" onChange={this.handleChange} placeholder="Name" />
-                        </div>
-                    </div>
-                    <div className="columns">
                         <div className="column">
                             <input type="text" required value={this.state.form.location} name="location" onChange={this.handleChange} placeholder="Location" />
                         </div>

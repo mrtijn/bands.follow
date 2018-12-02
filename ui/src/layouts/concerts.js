@@ -6,38 +6,21 @@ import ListConcerts from '../components/listConcerts';
 export default class Index extends React.Component {
     constructor({ props }){
         super(props);
-        this.state = {
-            username: '',
-            password: ''
-        }
+        this.state = {}
 
+        // BINDINGS
+        this.handleAddConcert = this.handleAddConcert.bind(this);
     }
-    handleInputChange = (event) => {
-        const value = event.target.value;
-        const name = event.target.name;
-        this.setState({
-            [name]: value
-        })
-    }
-    handleSubmit = async(e) =>{
-        e.preventDefault();
-        
-        let user = await api.post('/user/create',{
-            username: this.state.username,
-            password: this.state.password
-        });
-        console.log(user);
+    handleAddConcert = async(data) => {
+        this.setState({ newConcert: data });
     }
     render () {
         return (
             <div className="l-concerts">
-                <Link to="/"> Back to home </Link>
-
-                <h2 className="l-concerts__title">Concerts: </h2>
-                <ListConcerts />
+                <ListConcerts addConcert={this.state.newConcert} />
                 <div className="l-concerts__new-concert">
                     <h3>Add concert</h3>
-                    <CreateConcert />
+                    <CreateConcert onConcertAdded={this.handleAddConcert} />
                     
                 </div>
                 

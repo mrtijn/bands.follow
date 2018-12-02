@@ -17,8 +17,14 @@ class createArtist extends Component {
         e.preventDefault();
 
         let form = this.state;
-        let artist = await api.post('/artist/create', form);
-        console.log(artist);
+        try {
+            let artist = await api.post('/artist/create', form);
+            console.log(artist);
+            alert(`${form.name} created`);
+        } catch (e) {
+            alert('Failed to create artist');
+        }
+
 
     }
     render(){

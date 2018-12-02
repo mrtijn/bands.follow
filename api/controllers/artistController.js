@@ -42,6 +42,20 @@ const getArtists = {
     }
 }
 
+const getArtist = {
+    validate: {
+        params: {
+            id: Joi.number().integer().required()
+        },
+    },
+    async handler(req, h) {
+        let data = await db.select('*').where('id', req.params.id).from('artists');
+
+        return h.response(data).code(200);
+    }
+}
+
+
 
 const checkIfArtistExists = async (name) => {
     let findArtist = await db.select('*')
@@ -58,5 +72,6 @@ const checkIfArtistExists = async (name) => {
 
 export {
     createArtist,
-    getArtists
+    getArtists,
+    getArtist
 }

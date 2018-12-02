@@ -1,7 +1,7 @@
-import { createUser, spotifyLogin, spotifyCallback } from './controllers/userController';
+import { createUser} from './controllers/userController';
 import { createConcert, getConcerts } from './controllers/concertController';
-import { createArtist, getArtists } from './controllers/artistController';
-import * as Spotify from './controllers/spotifyController';
+import { createArtist, getArtists, getArtist } from './controllers/artistController';
+import { spotifyLogin, spotifyCallback }from './controllers/spotifyController';
 const routes = [
     {
         method: 'POST',
@@ -22,6 +22,11 @@ const routes = [
     },
     {
         method: 'GET',
+        path: '/artist/:id',
+        handler: getArtist.handler
+    },
+    {
+        method: 'GET',
         path: '/artists',
         handler: getArtists.handler
     },
@@ -30,6 +35,7 @@ const routes = [
         path: '/concerts',
         handler: getConcerts.handler
     },
+
     {
         method: 'POST',
         path: '/concert/create',
@@ -38,46 +44,21 @@ const routes = [
         },
         handler: createConcert.handler
     },
-    // {
-    //     method: 'GET',
-    //     path: '/login',
-    //     handler: spotifyLogin
-    // },
-    // {
-    //     method: 'GET',
-    //     path: '/callback/',
-    //     handler: spotifyCallback
-    // },
     {
         method: 'GET',
-        path: '/auth/spotify',
-        options: {
-            auth: 'spotify',
-            handler: (request, h) =>{
-                if (request.auth.isAuthenticated) {
-                    const user = request.auth.credentials.profile
-                    const data = {
-                        name: user.displayName,
-                        username: user.username,
-                        avatar: user.raw.avatar_url
-                    }
-
-                    return h.response('authenticated', data)
-                }
-
-                return h.response({
-                    error: 'Could not authenticate with spotify.'
-                }).code(400)
-            
-            }
-        }
-
+        path: '/login',
+        handler: spotifyLogin
     },
     {
         method: 'GET',
-        path: '/user',
-        handler: Spotify.getUser.handler
-    }
+        path: '/callback/',
+        handler: spotifyCallback
+    },
+    // {
+    //     method: 'GET',
+    //     path: '/user',
+    //     handler: Spotify.getUser.handler
+    // }
 ]
 
 

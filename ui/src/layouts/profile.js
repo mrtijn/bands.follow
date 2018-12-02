@@ -10,6 +10,8 @@ class Profile extends React.Component{
         this.state = {
             profile: null,
         }
+
+        this.setToken().bind(this);
     }
     spotifyLogin = async (e) => {
         e.preventDefault();
@@ -31,16 +33,16 @@ class Profile extends React.Component{
 
 
     }
-    componentDidMount() {
-        const { match} = this.props;
+    setToken(){
+        const { match } = this.props;
         let { accessToken, refreshToken } = match.params;
 
-        if(accessToken){
+        if (accessToken) {
             Cookie.set('access_token', accessToken);
             Cookie.set('refresh_token', refreshToken);
 
             window.location = '/profile';
-        }else{
+        } else {
             accessToken = Cookie.get('access_token');
             refreshToken = Cookie.get('refresh_token');
         }

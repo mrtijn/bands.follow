@@ -5,11 +5,9 @@ import db from '../db'
 import Concerts from '../models/concert';
 
 
-
 const createConcert = {
     validate: {
         payload: {
-            name: Joi.string().required(),
             location: Joi.string().required(),
             date: Joi.date().required(),
             artists: Joi.array().required()
@@ -21,7 +19,6 @@ const createConcert = {
 
 
             let id = await db('concerts').insert({
-                name: payload.name,
                 location: payload.location,
                 date: payload.date
             });
@@ -30,16 +27,27 @@ const createConcert = {
             // console.log(res);
 
             const data = {
-                message: `Concert created`,
-                id: id
+                id: id[0],
+                location: payload.location,
+                date: payload.date,
+                artists: []
             }
 
-            payload.artists.forEach(async (artist_id) => {
+            let artists = payload.artists;
+            for (let artist_id in artists){
                 await db('concert_artists').insert({
-                    concert_id: id,
-                    artist_id: artist_id
+                    concert_id: id[0],
+                    artist_id: artists[artist_id]
                 })
-            })
+
+                let artist = await db.select('*').where('id', artists[artist_id]).from('artists');
+                console.log(artist);
+                data.artists.push(artist[0]);
+                
+            }
+
+
+
 
 
             return h.response(data).code(201);
