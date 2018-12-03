@@ -24,8 +24,7 @@ const createConcert = {
             });
 
 
-            // console.log(res);
-
+  
             const data = {
                 id: id[0],
                 location: payload.location,
@@ -41,7 +40,6 @@ const createConcert = {
                 })
 
                 let artist = await db.select('*').where('id', artists[artist_id]).from('artists');
-                console.log(artist);
                 data.artists.push(artist[0]);
                 
             }
@@ -61,7 +59,6 @@ const createConcert = {
 
 const getConcerts = {
     async handler(req, h) {
-        console.log('go2')
         try {
             let concerts = await new Concerts().fetchAll({ withRelated: 'artists' });
             return h.response(concerts);
@@ -69,11 +66,6 @@ const getConcerts = {
             return Boom.badRequest('Something went wrong!');
         }
         
-
-        // console.log(test);
-
-        // let data = await db.select('*').from('concerts');
-        // return h.response(data).code(200);
     }
 }
 

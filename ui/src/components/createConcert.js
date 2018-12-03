@@ -41,21 +41,16 @@ class createConcert extends Component {
         e.preventDefault();
 
         let form = this.state.form;
-        console.log(form);
+
         try {
             let concert = await api.post('/concert/create', form);
             this.props.onConcertAdded(concert.data);
  
             this.setState({ form: { ...this.defaultForm, artists: []}});
-            console.log(this.state);
-            console.log('Concert added');
 
         } catch (error) {
             alert('Concert creation failed');
         }
-        
-
-
     }
     async getArtists(){
 
@@ -67,8 +62,6 @@ class createConcert extends Component {
         } catch (e) {
             console.error('Could not get artists');
         }
-        
-        
     }
     componentDidMount(){
         // MOUNT FUNCTIONS

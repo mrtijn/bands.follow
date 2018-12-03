@@ -1,15 +1,32 @@
 const request = require('request-promise'); 
 const Joi = require('joi');
 const Boom = require('boom');
+const url = require('url');
+var querystring = require('querystring');
+var client_id = 'fc54277fa14147e28e480b04a5b3da31'; // Your client id
+var client_secret = '658d68c610754dc79cb465b21e572910'; // Your secret
 
-const Auth = {
+var redirect_uri = 'http://localhost:3000/spotify/cb';
 
-}
+var stateKey = 'spotify_auth_state';
+const generateRandomString = function (length) {
+    var text = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (var i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+};
+
+
+
+
 
 const getUser = {
     async handler(req,h) {
 
-        console.log(req);
+
         try{
             let token = req.headers.token;
             let access_token = '';
@@ -66,7 +83,6 @@ const spotifyCallback = async (req, h) => {
 
 
     if (!state) {
-        console.log(state)
         return h.redirect('/#' +
             querystring.stringify({
                 error: 'state_mismatch'
@@ -89,7 +105,7 @@ const spotifyCallback = async (req, h) => {
         return request.post(authOptions).then(async (body) => {
 
             if (body) {
-                console.log(body);
+
                 var access_token = body.access_token,
                     refresh_token = body.refresh_token;
 
@@ -105,8 +121,6 @@ const spotifyCallback = async (req, h) => {
                     access_token: access_token,
                     refresh_token: refresh_token
                 });
-
-
 
 
                 return h.redirect(`http://localhost:3001/profile/${access_token}/${refresh_token}`)

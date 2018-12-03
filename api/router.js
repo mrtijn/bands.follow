@@ -46,12 +46,12 @@ const routes = [
     },
     {
         method: 'GET',
-        path: '/login',
+        path: '/spotify/auth',
         handler: spotifyLogin
     },
     {
         method: 'GET',
-        path: '/callback/',
+        path: '/spotify/cb',
         handler: spotifyCallback
     },
     // {
