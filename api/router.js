@@ -1,6 +1,6 @@
 import { createUser} from './controllers/userController';
 import { createConcert, getConcerts } from './controllers/concertController';
-import { createArtist, getArtists, getArtist } from './controllers/artistController';
+import { createArtist, getArtists, getArtist, searchArtist } from './controllers/artistController';
 import { spotifyLogin, spotifyCallback }from './controllers/spotifyController';
 const routes = [
     {
@@ -19,6 +19,14 @@ const routes = [
             validate: createArtist.validate
         },
         handler: createArtist.handler
+    },
+    {
+        method: 'POST',
+        path: '/artist/search',
+        options: {
+            validate: searchArtist.validate
+        },
+        handler: searchArtist.handler
     },
     {
         method: 'GET',

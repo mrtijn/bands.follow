@@ -28,6 +28,23 @@
                 transform: translateY(0px);
             }
         }
+
+  
+
+    }
+}
+
+.c-concert{
+    display: flex;
+    figure{
+
+        margin-right: 30px;
+
+        img{
+            width: 150px;
+        }
+    }
+    &__content{
         h4{
             display: block;
             margin-bottom: 4px;

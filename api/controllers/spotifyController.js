@@ -2,13 +2,14 @@ const request = require('request-promise');
 const Joi = require('joi');
 const Boom = require('boom');
 const url = require('url');
-var querystring = require('querystring');
-var client_id = 'fc54277fa14147e28e480b04a5b3da31'; // Your client id
-var client_secret = '658d68c610754dc79cb465b21e572910'; // Your secret
+const querystring = require('querystring');
+import db from '../db'
+const client_id = 'fc54277fa14147e28e480b04a5b3da31'; // Your client id
+const client_secret = '658d68c610754dc79cb465b21e572910'; // Your secret
 
-var redirect_uri = 'http://localhost:3000/spotify/cb';
+const redirect_uri = 'http://localhost:3000/spotify/cb';
+const stateKey = 'spotify_auth_state';
 
-var stateKey = 'spotify_auth_state';
 const generateRandomString = function (length) {
     var text = '';
     var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -21,15 +22,72 @@ const generateRandomString = function (length) {
 
 
 
+const getToken = async function(){
+    let token = null;
+    try {
+        token = await db.select('*').from('api_keys').where('name', 'spotify');
+    } catch (e) {
+        return e;
+    }
+    
+    return token[0];
+}
 
+const searchSpotify = async function(query, type){
+
+    try {
+        let token = await getToken();
+        console.log(token);
+        if(token){
+            var options = {
+                url: 'https://api.spotify.com/v1/search',
+                headers: { 'Authorization': 'Bearer ' + token.access_token },
+                json: true,
+                qs: {
+                    q: query,
+                    type: type
+                }
+            };
+
+            // use the access token to access the Spotify Web API
+            let res = await request.get(options);
+
+            return res;
+        }
+       
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+const getSpotifyArtist = async function (id) {
+
+    try {
+        let token = await getToken();
+    
+        if (token) {
+            var options = {
+                url: 'https://api.spotify.com/v1/artists/' + id,
+                headers: { 'Authorization': 'Bearer ' + token.access_token },
+                json: true
+            };
+
+            // use the access token to access the Spotify Web API
+            let res = await request.get(options);
+            console.log(res);
+            return res;
+        }
+
+    } catch (e) {
+        console.error(e);
+    }
+}
 
 const getUser = {
     async handler(req,h) {
-
-
+        
         try{
             let token = req.headers.token;
-            let access_token = '';
             var options = {
                 url: 'https://api.spotify.com/v1/me',
                 headers: { 'Authorization': 'Bearer ' + token },
@@ -44,10 +102,6 @@ const getUser = {
         } catch(e){
             return h.response(e);
         }
-
-
-
-        
     }
 }
 
@@ -117,13 +171,29 @@ const spotifyCallback = async (req, h) => {
 
                 // use the access token to access the Spotify Web API
                 //let me = await request.get(options);
-                h.state('data', {
-                    access_token: access_token,
-                    refresh_token: refresh_token
-                });
+                try {
+                    if(await db.select('name').from('api_keys').where('name', 'spotify')){
+                        await db('api_keys').where('name', 'spotify').update({
+                            access_token: access_token,
+                            refresh_token: refresh_token
+                        })
+                    }else{
+                        let res = await db('api_keys').insert({
+                            name: 'spotify',
+                            access_token: access_token,
+                            refresh_token: refresh_token
+                        });
+                    }
+
+                    return h.response(true);
+                } catch (e) {
+                    return h.response(false);
+                }
 
 
-                return h.redirect(`http://localhost:3001/profile/${access_token}/${refresh_token}`)
+
+
+               
 
             } else {
 
@@ -167,6 +237,8 @@ const spotifyRefreshToken = (req, h) => {
 
 export {
     getUser,
+    searchSpotify,
+    getSpotifyArtist,
     spotifyLogin,
     spotifyCallback,
     spotifyRefreshToken

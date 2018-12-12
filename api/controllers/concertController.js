@@ -2,7 +2,7 @@ import Boom from 'boom';
 import Joi from 'joi';
 import db from '../db'
 
-import Concerts from '../models/concert';
+import Concerts from '../models/concertModel';
 
 
 const createConcert = {
@@ -39,16 +39,17 @@ const createConcert = {
                     artist_id: artists[artist_id]
                 })
 
-                let artist = await db.select('*').where('id', artists[artist_id]).from('artists');
-                data.artists.push(artist[0]);
+                // // let artist = await db.select('*').where('id', artists[artist_id]).from('artists');
+                // let artist = await new Artists({ 'id': artists[artist_id]}).fetch({withRelated: 'spotify_data'});
+                // artist = artist.toJSON();
+                // console.log(artist);
+                // data.artists.push(artist);
                 
             }
+            let concertData = await new Concerts({ 'id': id[0] }).fetch({ withRelated: ['artists', 'artists.spotify_data'] });
 
 
-
-
-
-            return h.response(data).code(201);
+            return h.response(concertData).code(201);
         } catch (e) {
             console.log(e);
 
@@ -60,7 +61,7 @@ const createConcert = {
 const getConcerts = {
     async handler(req, h) {
         try {
-            let concerts = await new Concerts().fetchAll({ withRelated: 'artists' });
+            let concerts = await new Concerts().fetchAll({ withRelated: ['artists', 'artists.spotify_data'] });
             return h.response(concerts);
         } catch (e) {
             return Boom.badRequest('Something went wrong!');
