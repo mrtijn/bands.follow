@@ -5,6 +5,7 @@ class createArtist extends Component {
         super(props)
         this.state = {
             name: '',
+            hasSearched: false,
             proposedArtists: []
         }
 
@@ -19,8 +20,11 @@ class createArtist extends Component {
         e.preventDefault();
         try {
             let artist = await api.post('/artist/search', {name: this.state.name});
-
-            this.setState({'proposedArtists': artist.data.artists.items});
+            
+            this.setState({
+                'proposedArtists': artist.data.artists.items,
+                'hasSearched': true
+        });
             // alert(`${form.name} created`);
         } catch (e) {
             alert(e);
@@ -43,20 +47,41 @@ class createArtist extends Component {
 
 
     }
+    proposedArtists(){
+        if(this.state.hasSearched){
+            if (this.state.proposedArtists.length) {
+                let searchArtists = this.state.proposedArtists.map((artist) => {
+                    return (<li key={artist.id} data-name={artist.name} data-id={artist.id} onClick={this.addArtist}>{artist.name}</li>)
+                });
+                return (
+                    <div>
+                        <strong>Did you mean:</strong>
+                        <ul className="c-artistList">
+                            {searchArtists}
+                        </ul>
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    No results found.
+                </div>
+            )
+        }
+
+    }
     render(){
-        let searchArtists = this.state.proposedArtists.map((artist) => {
-            return(<li key={artist.id} data-name={artist.name} data-id={artist.id} onClick={this.addArtist}>{artist.name}</li>)
-        })
+
         return (
             <div>
                 <h2>Create artist</h2>
                 <form onSubmit={this.handleSubmit}>
                     <input type="text" value={this.state.name} onChange={this.handleChange} />
-                    <button>Add artist</button>
+                    <button>Search artist</button>
                 </form>
 
-                Did you mean:
-                {searchArtists}
+                {this.proposedArtists()}
             </div>
         )
     }

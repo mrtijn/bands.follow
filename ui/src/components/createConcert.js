@@ -45,8 +45,7 @@ class createConcert extends Component {
         try {
             let concert = await api.post('/concert/create', form);
             this.props.onConcertAdded(concert.data);
- 
-            this.setState({ form: { ...this.defaultForm, artists: []}});
+            // this.setState({ form: { ...this.defaultForm, artists: []}});
 
         } catch (error) {
             alert('Concert creation failed');
@@ -73,30 +72,24 @@ class createConcert extends Component {
         return (
             <div className="c-create-concert ">
                 <form className="c-form" onSubmit={this.handleSubmit}>
-                    <div className="columns">
-                        <div className="column ">
-                            <div className="field">
-                                <div className="control select">
-                                    <select required defaultValue="" name="artists" onChange={this.handleSelect} >
-                                        <option value=""  disabled>Select artist</option>
-                                        {
-                                            artists.map(artist => <option key={artist.id} value={artist.id}>{artist.name}</option>)
-                                        }
-                                    </select>
-                                </div>
+                    <div className="column ">
+                        <div className="field">
+                            <div className="control select">
+                                <select required defaultValue="" name="artists" onChange={this.handleSelect} >
+                                    <option value="" disabled>Select artist</option>
+                                    {
+                                        artists.map(artist => <option key={artist.id} value={artist.id}>{artist.name}</option>)
+                                    }
+                                </select>
                             </div>
                         </div>
-                        <div className="column">
-                            <input type="text" required value={this.state.form.location} name="location" onChange={this.handleChange} placeholder="Location" />
-                        </div>
-                        <div className="column">
-                            <input type="date" required value={this.state.form.date} name="date" onChange={this.handleChange} placeholder="Date" />
-                        </div>
                     </div>
-
-
-
-                    <Link className="c-btn c-btn--secondary" to="/artist/create"> Add artist </Link>
+                    <div className="column">
+                        <input type="text" required value={this.state.form.location} name="location" onChange={this.handleChange} placeholder="Location" />
+                    </div>
+                    <div className="column">
+                        <input type="date" required value={this.state.form.date} name="date" onChange={this.handleChange} placeholder="Date" />
+                    </div>
                     <button className="c-btn c-btn--primary">Add concert</button>
                 </form>
             </div>
