@@ -1,0 +1,25 @@
+{
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon --inspect -e ts --exec \"yarn run compile\"",
+    "compile": "tsc && babel-node ./dist/server.js"
+  },
+  "dependencies": {
+    "@types/hapi": "^18.0.1",
+    "@types/knex": "^0.16.1",
+    "@types/node": "^11.13.0",
+    "hapi": "^18.1.0",
+    "knex": "^0.16.3",
+    "mysql": "^2.16.0",
+    "objection": "^1.6.7"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
+    "hapi-decorators": "^1.0.0",
+    "nodemon": "^1.18.10",
+    "typescript": "^3.4.1"
+  }
+}
