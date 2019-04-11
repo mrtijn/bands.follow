@@ -15,12 +15,8 @@ export class artistController {
     @Post('create')
     async createArtist(@Body() createArtistDto: createArtistDto) {
         console.log(createArtistDto);
-        try {
-            await this.artistService.createArtist(createArtistDto);
-        } catch (error) {
-            console.log(error);
-        }
-        return createArtistDto;
+        return await this.artistService.createArtist(createArtistDto);
+
     }
 
 }
