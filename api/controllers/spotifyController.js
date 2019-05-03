@@ -4,8 +4,8 @@ const Boom = require('boom');
 const url = require('url');
 const querystring = require('querystring');
 import db from '../db'
-const client_id = 'fc54277fa14147e28e480b04a5b3da31'; // Your client id
-const client_secret = '658d68c610754dc79cb465b21e572910'; // Your secret
+const client_id = ''; // Your client id
+const client_secret = ''; // Your secret
 
 const redirect_uri = 'http://localhost:3000/spotify/cb';
 const stateKey = 'spotify_auth_state';
