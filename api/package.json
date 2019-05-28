@@ -4,17 +4,27 @@
   "description": "A api to follow bands",
   "main": "index.js",
   "scripts": {
-    "serve": "tsc-watch --onSuccess \"node ./dist/server.js\""
+    "serve": "tsc-watch --onSuccess \"node --inspect ./dist/server.js\""
   },
   "author": "Martijn de Ruiter",
   "license": "ISC",
   "dependencies": {
+    "@hapi/bell": "^10.1.0",
+    "@hapi/boom": "^7.4.2",
+    "@hapi/cookie": "^10.1.0",
+    "@hapi/good": "^8.2.0",
+    "@hapi/good-console": "^8.1.0",
+    "@hapi/good-squeeze": "^5.2.0",
+    "@hapi/hapi": "^18.3.1",
+    "@hapi/joi": "^15.0.3",
     "@types/hapi": "^18.0.2",
-    "@types/node": "^12.0.1",
-    "hapi": "^18.1.0",
+    "@types/hapi__bell": "^10.1.0",
+    "@types/hapi__boom": "^7.4.0",
+    "@types/hapi__joi": "^15.0.1",
+    "@types/node": "^12.0.2",
     "mysql": "^2.17.1",
     "reflect-metadata": "^0.1.13",
-    "tsc-watch": "^2.2.0",
+    "tsc-watch": "^2.2.1",
     "typeorm": "^0.2.17",
     "typescript": "^3.4.5"
   },

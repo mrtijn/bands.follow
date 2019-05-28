@@ -7,6 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -15,34 +18,67 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const hapi = __importStar(require("hapi"));
+const hapi_1 = __importDefault(require("@hapi/hapi"));
 require('dotenv').config();
 require("reflect-metadata");
-// create a server with a host and port
-const server = new hapi.Server({
-    port: 8000
+const db_1 = __importDefault(require("./db"));
+const routes_1 = __importDefault(require("./routes"));
+const good_1 = __importDefault(require("@hapi/good"));
+const Bell = __importStar(require("@hapi/bell"));
+const createServer = () => __awaiter(this, void 0, void 0, function* () {
+    // init the DB
+    yield new db_1.default().init();
+    // create a server with a host and port
+    const server = new hapi_1.default.Server({
+        port: process.env.PORT
+    });
+    yield server.register(Bell);
+    console.log(server.info.uri);
+    server.auth.strategy('facebook', 'bell', {
+        provider: 'facebook',
+        password: 'aaaaabbbbbbccccccddddddeeeeeefffffffggggghhhhhiiiiiijjjjj',
+        isSecure: false,
+        clientId: process.env.FB_CLIENT_ID,
+        clientSecret: process.env.FB_CLIENT_SECRET,
+        // scope: ['email'],
+        location: 'http://localhost:5000'
+    });
+    const options = {
+        ops: {
+            interval: 1000
+        },
+        reporters: {
+            'console-reporter': [
+                {
+                    module: '@hapi/good-squeeze',
+                    name: 'Squeeze',
+                    args: [{ log: '*', response: '*' }]
+                },
+                {
+                    module: '@hapi/good-console'
+                },
+                'stdout'
+            ]
+        }
+    };
+    yield server.register({
+        plugin: good_1.default,
+        options,
+    });
+    // add the routes
+    server.route(routes_1.default);
+    return server;
 });
-// add the route
-server.route({
-    method: 'GET',
-    path: '/hello',
-    handler: (request, h) => {
-        return 'hello world';
+const startServer = () => __awaiter(this, void 0, void 0, function* () {
+    try {
+        const server = yield createServer();
+        yield server.start();
+        console.log('Server running at:', server.info.uri);
+    }
+    catch (err) {
+        console.log(err);
+        process.exit(1);
     }
 });
-// start the server
-function start() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield server.start();
-        }
-        catch (err) {
-            console.log(err);
-            process.exit(1);
-        }
-        console.log('Server running at:', server.info.uri);
-    });
-}
-// don't forget to call start
-start();
+startServer();
 //# sourceMappingURL=server.js.map

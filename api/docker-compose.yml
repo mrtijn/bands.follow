@@ -1,5 +1,4 @@
 version: '3'
-
 services:
   band.follow-api:
     build: .
@@ -7,6 +6,6 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - 8000:8000
+      - 5000:5000
       - 9229:9229
     command: npm run serve
