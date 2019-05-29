@@ -22,9 +22,22 @@ const hapi_1 = __importDefault(require("@hapi/hapi"));
 require('dotenv').config();
 require("reflect-metadata");
 const db_1 = __importDefault(require("./db"));
-const routes_1 = __importDefault(require("./routes"));
 const good_1 = __importDefault(require("@hapi/good"));
-const Bell = __importStar(require("@hapi/bell"));
+// import * as Bell from '@hapi/bell';
+const hapi_auth_jwt2_1 = __importDefault(require("hapi-auth-jwt2"));
+const boom_1 = __importDefault(require("@hapi/boom"));
+const User_controller_1 = __importDefault(require("./modules/user/User.controller"));
+const artistModule = __importStar(require("./modules/artist"));
+const concertModule = __importStar(require("./modules/concert"));
+const userModule = __importStar(require("./modules/user"));
+// Catch unhandling unexpected exceptions
+process.on("uncaughtException", (error) => {
+    console.error(`uncaughtException ${error.message}`);
+});
+// Catch unhandling rejected promises
+process.on("unhandledRejection", (reason) => {
+    console.error(`unhandledRejection ${reason}`);
+});
 const createServer = () => __awaiter(this, void 0, void 0, function* () {
     // init the DB
     yield new db_1.default().init();
@@ -32,16 +45,32 @@ const createServer = () => __awaiter(this, void 0, void 0, function* () {
     const server = new hapi_1.default.Server({
         port: process.env.PORT
     });
-    yield server.register(Bell);
-    console.log(server.info.uri);
-    server.auth.strategy('facebook', 'bell', {
-        provider: 'facebook',
-        password: 'aaaaabbbbbbccccccddddddeeeeeefffffffggggghhhhhiiiiiijjjjj',
-        isSecure: false,
-        clientId: process.env.FB_CLIENT_ID,
-        clientSecret: process.env.FB_CLIENT_SECRET,
-        // scope: ['email'],
-        location: 'http://localhost:5000'
+    yield server.register(hapi_auth_jwt2_1.default);
+    server.auth.strategy('jwt', 'jwt', { key: process.env.APP_SECRET,
+        validate: new User_controller_1.default().validateUser,
+        verifyOptions: { algorithms: ['HS256'] } // pick a strong algorithm
+    });
+    server.auth.default('jwt');
+    // await server.register(Bell);
+    // server.auth.strategy('facebook', 'bell', {
+    //     provider: 'facebook',
+    //     password: 'aaaaabbbbbbccccccddddddeeeeeefffffffggggghhhhhiiiiiijjjjj',
+    //     isSecure: false,
+    //     clientId: process.env.FB_CLIENT_ID,
+    //     clientSecret: process.env.FB_CLIENT_SECRET,
+    //     // scope: ['email'],
+    //     location: 'http://localhost:5000'
+    // });
+    server.ext('onPreResponse', (request, h) => {
+        // Transform only server errors
+        if (request.response && request.response instanceof boom_1.default) {
+            console.error(request.response);
+            return boom_1.default.boomify(request.response);
+        }
+        else {
+            // Otherwise just continue with previous response
+            return h.continue;
+        }
     });
     const options = {
         ops: {
@@ -65,8 +94,13 @@ const createServer = () => __awaiter(this, void 0, void 0, function* () {
         plugin: good_1.default,
         options,
     });
-    // add the routes
-    server.route(routes_1.default);
+    artistModule.init(server);
+    concertModule.init(server);
+    userModule.init(server);
+    // console.log('register module')
+    // // Add modules
+    // // await server.register([artistModule, concertModule, userModule])
+    // console.log(server);
     return server;
 });
 const startServer = () => __awaiter(this, void 0, void 0, function* () {

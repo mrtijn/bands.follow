@@ -4,10 +4,10 @@ import { Artist } from './Artist.entity';
 import Boom from '@hapi/boom';
 
 
-export default new class ArtistController {
+export default class ArtistController {
     public async getAllArtist(): Promise<Array<Artist>> {
+        console.log(this);
         const artistRepo : Repository<Artist> = getRepository(Artist);
-
         const artists  = await artistRepo.find();
 
         return artists;

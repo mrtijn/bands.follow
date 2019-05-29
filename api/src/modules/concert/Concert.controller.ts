@@ -7,7 +7,7 @@ import { Artist } from '../artist/Artist.entity';
 
 
 
-export default new class ArtistController {
+export default class ArtistController {
     public async getAllConcerts(): Promise<Array<Concert>> {
         const concertRepo : Repository<Concert> = getRepository(Concert);
 
