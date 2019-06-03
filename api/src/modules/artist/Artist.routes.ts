@@ -3,6 +3,10 @@ import ArtistController from "./Artist.controller";
 import * as ArtistValidations from "./Artist.validations";
 export default function(server: hapi.Server){
     const artistController = new ArtistController();
+
+    // Bind functions
+    server.bind(artistController);
+
     server.route([
         {
           method: "GET",
@@ -23,6 +27,11 @@ export default function(server: hapi.Server){
               payload: ArtistValidations.createArtist
             }
           }
+        },
+        {
+          method: "GET",
+          path: "/artist/search",
+          handler: artistController.findArtist
         }
       ]);
 }

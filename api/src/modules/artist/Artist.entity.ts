@@ -10,10 +10,10 @@ export class Artist {
     @Column()
     name!: string;
 
-    @Column()
-    genre!: string;
-
     @ManyToMany(type => Concert, concert => concert.artists)
     concerts!: Concert[];
+
+    @Column()
+    spotify_id!: string;
 
 }

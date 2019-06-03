@@ -2,11 +2,11 @@ import {getRepository, Repository} from "typeorm";
 import * as hapi from 'hapi';
 import { Artist } from './Artist.entity';
 import Boom from '@hapi/boom';
-
+import SpotifyService from '../../services/spotify';
 
 export default class ArtistController {
+    spotifyService = new SpotifyService();
     public async getAllArtist(): Promise<Array<Artist>> {
-        console.log(this);
         const artistRepo : Repository<Artist> = getRepository(Artist);
         const artists  = await artistRepo.find();
 
@@ -41,5 +41,10 @@ export default class ArtistController {
         await artistRepo.save(artist);
 
         return artist;
+    }
+
+    public async findArtist(req: hapi.Request) {
+        const searchResult = this.spotifyService.findArtist('muse');
+        return searchResult;
     }
 }

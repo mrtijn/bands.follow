@@ -3,7 +3,8 @@ require('dotenv').config();
 import "reflect-metadata";
 import db from './db';
 import good from '@hapi/good';
-// import * as Bell from '@hapi/bell';
+import Bell from '@hapi/bell';
+import spotifyAuth from './plugins/spotify';
 import hapiAuthJwt2 from 'hapi-auth-jwt2';
 import Boom from '@hapi/boom';
 import UserController from './modules/user/User.controller';
@@ -11,6 +12,7 @@ import UserController from './modules/user/User.controller';
 import * as artistModule from './modules/artist';
 import * as concertModule from './modules/concert';
 import * as userModule from './modules/user';
+
 // Catch unhandling unexpected exceptions
 process.on("uncaughtException", (error: Error) => {
   console.error(`uncaughtException ${error.message}`);
@@ -42,8 +44,12 @@ const createServer = async() => {
 
   server.auth.default('jwt');
 
-  // await server.register(Bell);
+  await server.register(Bell);
 
+  await server.register(spotifyAuth);
+
+
+  // Facebook login
   // server.auth.strategy('facebook', 'bell', {
   //     provider: 'facebook',
   //     password: 'aaaaabbbbbbccccccddddddeeeeeefffffffggggghhhhhiiiiiijjjjj',

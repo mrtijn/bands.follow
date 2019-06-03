@@ -23,7 +23,8 @@ require('dotenv').config();
 require("reflect-metadata");
 const db_1 = __importDefault(require("./db"));
 const good_1 = __importDefault(require("@hapi/good"));
-// import * as Bell from '@hapi/bell';
+const bell_1 = __importDefault(require("@hapi/bell"));
+const spotify_1 = __importDefault(require("./plugins/spotify"));
 const hapi_auth_jwt2_1 = __importDefault(require("hapi-auth-jwt2"));
 const boom_1 = __importDefault(require("@hapi/boom"));
 const User_controller_1 = __importDefault(require("./modules/user/User.controller"));
@@ -51,7 +52,9 @@ const createServer = () => __awaiter(this, void 0, void 0, function* () {
         verifyOptions: { algorithms: ['HS256'] } // pick a strong algorithm
     });
     server.auth.default('jwt');
-    // await server.register(Bell);
+    yield server.register(bell_1.default);
+    yield server.register(spotify_1.default);
+    // Facebook login
     // server.auth.strategy('facebook', 'bell', {
     //     provider: 'facebook',
     //     password: 'aaaaabbbbbbccccccddddddeeeeeefffffffggggghhhhhiiiiiijjjjj',
