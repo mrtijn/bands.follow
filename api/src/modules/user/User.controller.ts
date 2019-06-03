@@ -4,6 +4,7 @@ import { User } from './User.entity';
 import Boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { UserCredentials } from '../../interfaces';
 
 
 export default class UserController {
@@ -15,12 +16,19 @@ export default class UserController {
         return users;
     }
 
-    public async getSelf(): Promise<Array<User>> {
+    public async getSelf(req : hapi.Request): Promise<User> {
         const userRepo : Repository<User> = getRepository(User);
+        const userCredentials = req.auth.credentials as UserCredentials;
 
-        const users  = await userRepo.find();
+        try {
+            const user = await userRepo.findOne({
+                id: userCredentials.id
+            }) as User;
 
-        return users;
+            return user;
+        } catch (error) {
+            throw error;
+        }
     }
 
     public async createUser(req: hapi.Request) {
@@ -66,10 +74,12 @@ export default class UserController {
     public async validateUser(decoded: any, request: hapi.Request){
         const userRepo : Repository<User> = getRepository(User);
 
-        const users  = await userRepo.find();
+        const foundUser  = await userRepo.find({
+            id: decoded.id
+        });
 
         // do your checks to see if the person is valid
-        if (!users.find((user) =>  user.id === decoded.id)) {
+        if (!foundUser) {
             return { isValid: false };
         }
         else {

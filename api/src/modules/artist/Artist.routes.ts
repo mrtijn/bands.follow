@@ -31,7 +31,12 @@ export default function(server: hapi.Server){
         {
           method: "GET",
           path: "/artist/search",
-          handler: artistController.findArtist
+          handler: artistController.findArtist,
+          options: {
+            validate: {
+              query: ArtistValidations.searchArtist
+            }
+          }
         }
       ]);
 }

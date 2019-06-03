@@ -44,7 +44,8 @@ export default class ArtistController {
     }
 
     public async findArtist(req: hapi.Request) {
-        const searchResult = this.spotifyService.findArtist('muse');
+        const searchQuery = req.query.searchQuery as string;
+        const searchResult = this.spotifyService.findArtist(searchQuery);
         return searchResult;
     }
 }

@@ -2,11 +2,10 @@ import hapi from "@hapi/hapi";
 require('dotenv').config();
 import "reflect-metadata";
 import db from './db';
-import good from '@hapi/good';
-import Bell from '@hapi/bell';
-import spotifyAuth from './plugins/spotify';
+import Good from '@hapi/good';
+
 import hapiAuthJwt2 from 'hapi-auth-jwt2';
-import Boom from '@hapi/boom';
+
 import UserController from './modules/user/User.controller';
 
 import * as artistModule from './modules/artist';
@@ -44,44 +43,21 @@ const createServer = async() => {
 
   server.auth.default('jwt');
 
-  await server.register(Bell);
-
-  await server.register(spotifyAuth);
-
-
-  // Facebook login
-  // server.auth.strategy('facebook', 'bell', {
-  //     provider: 'facebook',
-  //     password: 'aaaaabbbbbbccccccddddddeeeeeefffffffggggghhhhhiiiiiijjjjj',
-  //     isSecure: false,
-  //     clientId: process.env.FB_CLIENT_ID,
-  //     clientSecret: process.env.FB_CLIENT_SECRET,
-  //     // scope: ['email'],
-  //     location: 'http://localhost:5000'
-  // });
-
-  server.ext('onPreResponse', (request: hapi.Request, h: hapi.ResponseToolkit) => {
-
-    // Transform only server errors
-    if (request.response && request.response instanceof Boom) {
-      console.error(request.response);
-      return Boom.boomify(request.response);
-    } else {
-      // Otherwise just continue with previous response
-      return h.continue;
-    }
-  })
-
   const options = {
       ops: {
           interval: 1000
       },
       reporters: {
-          'console-reporter': [
+          consoleReporter: [
               {
                   module: '@hapi/good-squeeze',
                   name: 'Squeeze',
-                  args: [{ log: '*', response: '*' }]
+                  args: [{
+                    error: "*",
+                    log: "*",
+                    response: "*",
+                    request: "*"
+                  }]
               },
               {
                   module: '@hapi/good-console'
@@ -92,7 +68,7 @@ const createServer = async() => {
   };
 
   await server.register({
-      plugin: good,
+      plugin: Good,
       options,
   });
 
@@ -100,11 +76,7 @@ const createServer = async() => {
   concertModule.init(server);
   userModule.init(server);
 
-  // console.log('register module')
-  // // Add modules
-  // // await server.register([artistModule, concertModule, userModule])
 
-  // console.log(server);
   return server;
 }
 

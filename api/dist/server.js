@@ -23,10 +23,7 @@ require('dotenv').config();
 require("reflect-metadata");
 const db_1 = __importDefault(require("./db"));
 const good_1 = __importDefault(require("@hapi/good"));
-const bell_1 = __importDefault(require("@hapi/bell"));
-const spotify_1 = __importDefault(require("./plugins/spotify"));
 const hapi_auth_jwt2_1 = __importDefault(require("hapi-auth-jwt2"));
-const boom_1 = __importDefault(require("@hapi/boom"));
 const User_controller_1 = __importDefault(require("./modules/user/User.controller"));
 const artistModule = __importStar(require("./modules/artist"));
 const concertModule = __importStar(require("./modules/concert"));
@@ -52,39 +49,21 @@ const createServer = () => __awaiter(this, void 0, void 0, function* () {
         verifyOptions: { algorithms: ['HS256'] } // pick a strong algorithm
     });
     server.auth.default('jwt');
-    yield server.register(bell_1.default);
-    yield server.register(spotify_1.default);
-    // Facebook login
-    // server.auth.strategy('facebook', 'bell', {
-    //     provider: 'facebook',
-    //     password: 'aaaaabbbbbbccccccddddddeeeeeefffffffggggghhhhhiiiiiijjjjj',
-    //     isSecure: false,
-    //     clientId: process.env.FB_CLIENT_ID,
-    //     clientSecret: process.env.FB_CLIENT_SECRET,
-    //     // scope: ['email'],
-    //     location: 'http://localhost:5000'
-    // });
-    server.ext('onPreResponse', (request, h) => {
-        // Transform only server errors
-        if (request.response && request.response instanceof boom_1.default) {
-            console.error(request.response);
-            return boom_1.default.boomify(request.response);
-        }
-        else {
-            // Otherwise just continue with previous response
-            return h.continue;
-        }
-    });
     const options = {
         ops: {
             interval: 1000
         },
         reporters: {
-            'console-reporter': [
+            consoleReporter: [
                 {
                     module: '@hapi/good-squeeze',
                     name: 'Squeeze',
-                    args: [{ log: '*', response: '*' }]
+                    args: [{
+                            error: "*",
+                            log: "*",
+                            response: "*",
+                            request: "*"
+                        }]
                 },
                 {
                     module: '@hapi/good-console'
@@ -100,10 +79,6 @@ const createServer = () => __awaiter(this, void 0, void 0, function* () {
     artistModule.init(server);
     concertModule.init(server);
     userModule.init(server);
-    // console.log('register module')
-    // // Add modules
-    // // await server.register([artistModule, concertModule, userModule])
-    // console.log(server);
     return server;
 });
 const startServer = () => __awaiter(this, void 0, void 0, function* () {
