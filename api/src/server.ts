@@ -30,7 +30,10 @@ const createServer = async() => {
 
   // create a server with a host and port
   const server: hapi.Server = new hapi.Server({
-    port: process.env.PORT
+    port: process.env.PORT,
+    routes: {
+      cors: true
+    }
   });
 
   await server.register(hapiAuthJwt2);

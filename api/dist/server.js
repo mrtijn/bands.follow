@@ -41,7 +41,10 @@ const createServer = () => __awaiter(this, void 0, void 0, function* () {
     yield new db_1.default().init();
     // create a server with a host and port
     const server = new hapi_1.default.Server({
-        port: process.env.PORT
+        port: process.env.PORT,
+        routes: {
+            cors: true
+        }
     });
     yield server.register(hapi_auth_jwt2_1.default);
     server.auth.strategy('jwt', 'jwt', { key: process.env.APP_SECRET,

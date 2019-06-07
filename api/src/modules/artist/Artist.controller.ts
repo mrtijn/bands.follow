@@ -6,9 +6,14 @@ import SpotifyService from '../../services/spotify';
 
 export default class ArtistController {
     spotifyService = new SpotifyService();
+
     public async getAllArtist(): Promise<Array<Artist>> {
         const artistRepo : Repository<Artist> = getRepository(Artist);
         const artists  = await artistRepo.find();
+        const addSpotifyData = artists.map(async (artist: any) => {
+            artist.spotify_data = await this.spotifyService.getArtistById(artist.spotify_id);
+        })
+        await Promise.all(addSpotifyData);
 
         return artists;
     }
@@ -25,6 +30,8 @@ export default class ArtistController {
             );
 
         if(!artist) throw Boom.notFound('Artist not found');
+
+        artist.spotify_data = await this.spotifyService.getArtistById(artist.spotify_id);
 
         return artist;
     }

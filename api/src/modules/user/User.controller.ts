@@ -55,7 +55,12 @@ export default class UserController {
             password: string
         };
 
-        const user = await userRepo.findOne({username: payload.username});
+        const user =
+            await userRepo
+            .createQueryBuilder('user')
+            .addSelect("user.password")
+            .where("user.username = :username", { username: payload.username })
+            .getOne();
 
         if(!user) throw Boom.notFound('User does not exist!');
 

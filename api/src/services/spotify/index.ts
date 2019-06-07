@@ -9,26 +9,42 @@ export default class SpotifyService{
         try {
             await this.getToken();
 
-            if(this.token){
-                var options = {
-                    url: 'https://api.spotify.com/v1/search',
-                    headers: { 'Authorization': 'Bearer ' + this.token },
-                    json: true,
-                    qs: {
-                        q: query,
-                        type: 'artist'
-                    }
-                };
+            var options = {
+                url: 'https://api.spotify.com/v1/search',
+                headers: { 'Authorization': 'Bearer ' + this.token },
+                json: true,
+                qs: {
+                    q: query,
+                    type: 'artist'
+                }
+            };
 
-                // use the access token to access the Spotify Web API
-                let res = await request.get(options);
+            // use the access token to access the Spotify Web API
+            let res = await request.get(options);
 
 
-                return res.artists.items;
-            }
-
+            return res.artists.items;
         } catch (error) {
             this.resetToken();
+            throw error;
+        }
+    }
+    async getArtistById(id: string) {
+
+        await this.getToken();
+
+        try {
+            var options = {
+                url: 'https://api.spotify.com/v1/artists/' + id,
+                headers: { 'Authorization': 'Bearer ' + this.token },
+                json: true
+            };
+
+            // use the access token to access the Spotify Web API
+            let res = await request.get(options);
+
+            return res;
+        } catch (error) {
             throw error;
         }
     }

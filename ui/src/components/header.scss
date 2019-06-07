@@ -1,0 +1,22 @@
+@import '../styles/_variables.scss';
+
+.c-header {
+    height: 50px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: lighten($base-bg, 10%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__logo{
+        margin-left: 10px;
+    }
+    &__nav {
+        margin-right: 10px;
+        a {
+            padding: 10px;
+        }
+    }
+}
