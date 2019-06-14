@@ -1,0 +1,43 @@
+.c-concerts {
+    display: flex;
+    flex-direction: column;
+
+
+    ul {
+        padding: 0;
+        max-width: 960px;
+        width: 100%;
+        margin: 0 auto;
+        list-style: none;
+        li {
+            margin-bottom: 10px;
+            a {
+                text-decoration: none;
+            }
+            strong{
+                color: #FFF;
+                font-size: 32px;
+                font-weight: 700;
+                text-transform: capitalize;
+
+            }
+            span {
+                display: block;
+                font-weight: 300;
+            }
+        }
+    }
+}
+
+.c-create-concert {
+    max-width: 960px;
+    margin: 0 auto;
+    h3 {
+        font-weight: 300;
+    }
+
+    form {
+        display: grid;
+
+    }
+}

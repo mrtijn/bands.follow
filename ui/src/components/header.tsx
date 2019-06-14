@@ -10,6 +10,7 @@ const Header : React.FC = () => {
             </div>
             <nav className="c-header__nav">
                 <Link to="/">Home</Link>
+                <Link to="/concerts">Concerts</Link>
                 <Link to="/artists">Artists</Link>
                 <button onClick={getToken}>Get / Refresh token</button>
             </nav>

@@ -50,6 +50,11 @@ export default class SpotifyService{
     }
     async getToken(){
         // Check if token is expired, otherwise don't get a new token;
+        if(this.expires_in instanceof Date){
+            console.log(this.expires_in.getTime() !> new Date().getTime() );
+            // console.log(this.expires_in !== null && this.expires_in.getTime());
+        }
+
         if(this.expires_in instanceof Date && (new Date().getTime() !> this.expires_in.getTime())) return false;
 
         const authOptions = {
@@ -67,6 +72,7 @@ export default class SpotifyService{
             this.token = spotifyResponse.access_token;
             this.expires_in = new Date( new Date().getTime() + (spotifyResponse.expires_in * 1000));
         } catch (error) {
+            console.error('Spotify Auth error');
             throw error;
         }
     }

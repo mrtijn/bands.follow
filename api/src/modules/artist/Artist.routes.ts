@@ -10,7 +10,7 @@ export default function(server: hapi.Server){
     server.route([
         {
           method: "GET",
-          path: "/artist/all",
+          path: "/artists/all",
           handler: artistController.getAllArtist
         },
         {

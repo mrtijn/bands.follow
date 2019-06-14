@@ -10,38 +10,64 @@
 
 .artist {
 
-
-
-    height: 100vh;
-    width: 100vw;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-
     &__inner {
-        max-width: 70vw;
-        width: 100%;
-        margin: 0 auto;
+        display: block;
+        width: 100vw;
+        position: relative;
         display: flex;
-        align-items: flex-end;
+        align-items: center;
+        justify-content: center;
     }
     figure {
-        max-width: 30vw;
         margin: 0;
-        margin-right: 20px;
+        order: 2;
+
+        img{
+            width: 100%;
+        }
     }
 
-    img{
-        max-width: 100%;
+
+
+    &__detail {
+        // display: none;
+        // position: absolute;
+        // top: 200px;
+        // left: 0px;
+
+        order: 1;
+        width: 30vw;
+        strong {
+            display: block;
+            font-weight: 700;
+            font-size: 64px;
+            line-height: 0.9em;
+            text-transform: uppercase;
+        }
+
+        span {
+            display: block;
+        }
+
+        .btn {
+            margin-top: 15px;
+        }
     }
 
-    strong {
-        font-weight: 700;
-        font-size: 32px;
-        text-transform: uppercase;
+    &__genre-list{
+        li {
+            display: inline-block;
+            &:after {
+                content: ',';
+                margin-right: 5px;
+            }
+
+            &:last-child:after{
+                content: '';
+            }
+        }
     }
+
 }
 
 

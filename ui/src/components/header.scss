@@ -10,8 +10,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 10;
     &__logo{
         margin-left: 10px;
+
+        a {
+            color: #FFF;
+            font-weight: 700;
+        }
     }
     &__nav {
         margin-right: 10px;

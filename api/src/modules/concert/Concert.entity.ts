@@ -1,6 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, ManyToMany, JoinTable} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne} from "typeorm";
 import { Artist } from '../artist/Artist.entity';
-
+import { Location } from '../location/Location.entity';
 @Entity()
 export class Concert {
 
@@ -10,22 +10,14 @@ export class Concert {
     @Column()
     name!: string;
 
-    @Column()
-    location_id!: string;
+    @Column({ type: 'datetime', nullable: true })
+    date!: Date;
 
     @ManyToMany(type => Artist, artists => artists.concerts)
     @JoinTable()
     artists!: Artist[];
 
+    @ManyToOne(type => Location, location => location.concerts)
+    location!: Location;
+
 }
-
-// @Entity()
-// export class ConcertArtists {
-
-//     @PrimaryColumn()
-//     concert_id!: string;
-
-//     @Column()
-//     artist_id!: string;
-
-// }

@@ -1,0 +1,19 @@
+
+
+.c-input {
+    font-size: 14px;
+    margin-bottom: 10px;
+    font-family: system-ui;
+    &--text {
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    &--select {
+        color: #000;
+    }
+
+    &--date {
+        color: #000;
+    }
+}

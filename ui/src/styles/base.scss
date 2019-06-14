@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap');
 @import '_variables';
-
+@import '_buttons';
+@import '_input';
 html, body {
     background-color: $base-bg;
     color: #FFF;

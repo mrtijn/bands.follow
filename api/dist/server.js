@@ -28,6 +28,7 @@ const User_controller_1 = __importDefault(require("./modules/user/User.controlle
 const artistModule = __importStar(require("./modules/artist"));
 const concertModule = __importStar(require("./modules/concert"));
 const userModule = __importStar(require("./modules/user"));
+const locationsModule = __importStar(require("./modules/location"));
 // Catch unhandling unexpected exceptions
 process.on("uncaughtException", (error) => {
     console.error(`uncaughtException ${error.message}`);
@@ -82,6 +83,7 @@ const createServer = () => __awaiter(this, void 0, void 0, function* () {
     artistModule.init(server);
     concertModule.init(server);
     userModule.init(server);
+    locationsModule.init(server);
     return server;
 });
 const startServer = () => __awaiter(this, void 0, void 0, function* () {

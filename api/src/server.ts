@@ -11,6 +11,7 @@ import UserController from './modules/user/User.controller';
 import * as artistModule from './modules/artist';
 import * as concertModule from './modules/concert';
 import * as userModule from './modules/user';
+import * as locationsModule from './modules/location';
 
 // Catch unhandling unexpected exceptions
 process.on("uncaughtException", (error: Error) => {
@@ -78,7 +79,7 @@ const createServer = async() => {
   artistModule.init(server);
   concertModule.init(server);
   userModule.init(server);
-
+  locationsModule.init(server);
 
   return server;
 }

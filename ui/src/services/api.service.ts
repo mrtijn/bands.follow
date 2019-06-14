@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import CreateConcert from '../views/concerts/create';
 const axiosInstance : AxiosInstance = axios.create({
     baseURL: 'http://localhost:5000',
     // timeout: 1000,
@@ -33,7 +34,7 @@ export default {
 
     /* Artists */
     async getArtists() : Promise<Array<any>>{
-        return await axiosInstance.get('/artist/all')
+        return await axiosInstance.get('/artists/all')
     },
 
     async searchArtist(searchQuery: string) : Promise<Array<any>> {
@@ -46,5 +47,23 @@ export default {
 
     async createArtist(artist: any) {
         return await axiosInstance.post('/artist/create', artist);
+    },
+
+    /* Concerts */
+    async getConcerts() : Promise<Array<any>> {
+        return await axiosInstance.get('/concerts/all');
+    },
+
+    async getConcert(id: string) {
+        return await axiosInstance.get(`/concert/${id}`);
+    },
+
+    async createConcert(form) {
+        return await axiosInstance.post('/concert/create', form);
+    },
+
+    /* Locations */
+    async getLocations(): Promise<Array<any>> {
+        return await axiosInstance.get('/locations/all');
     }
 }

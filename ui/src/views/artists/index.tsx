@@ -20,7 +20,7 @@ class Artists extends React.Component {
         this.getArtists();
     }
 
-    onChange = (e: any) => this.setState({ [e.target.name]: e.target.value })
+    onChange = (e: any) => this.setState({ [e.target.name]: e.target.value });
 
     async getArtists(){
         try {
@@ -32,14 +32,20 @@ class Artists extends React.Component {
     }
 
     renderArtists(){
-        console.log(this.state.artists);
         return this.state.artists.map((artist: any) =>
             <li key={artist.id} className="artist">
                 <div className="artist__inner">
                     <figure>
                         <img src={artist.spotify_data.images[0].url} alt={artist.name} />
                     </figure>
-                    <strong>{artist.name}</strong>
+                    <div className="artist__detail">
+                        <strong>{artist.name}</strong>
+                        <ul className="artist__genre-list">
+                        { artist.spotify_data.genres.map((genre : any) => <li key={genre}>{genre}</li>) }
+                        </ul>
+                        <button className="btn btn--white">Go to artist</button>
+                    </div>
+
                 </div>
 
             </li>
@@ -86,7 +92,7 @@ class Artists extends React.Component {
                 <ul>
                     {this.renderSearchResults()}
                 </ul>
-                <ul>
+                <ul >
                     {this.renderArtists()}
                 </ul>
             </div>

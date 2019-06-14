@@ -11,6 +11,7 @@ export default class ArtistController {
         const artistRepo : Repository<Artist> = getRepository(Artist);
         const artists  = await artistRepo.find();
         const addSpotifyData = artists.map(async (artist: any) => {
+            console.log(artist.spotify_id);
             artist.spotify_data = await this.spotifyService.getArtistById(artist.spotify_id);
         })
         await Promise.all(addSpotifyData);
