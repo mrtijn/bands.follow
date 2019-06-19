@@ -1,10 +1,36 @@
 import request from 'request-promise';
+import { SpotifyData } from './spotify.model';
 const client_id = process.env.SPOTIFY_CLIENT as string;
 const client_secret = process.env.SPOTIFY_SECRET as string;
+
+
+type spotifyObj = {
+    spotify_id: string;
+    data: SpotifyData
+}
+
 
 export default class SpotifyService{
     token!: String | null;
     expires_in!: Date | null
+    async enrichArtistData(spotify_id: string) : Promise<SpotifyData>{
+        const artistData = await this.getArtistById(spotify_id);
+        return this.filterSpotifyData(artistData);
+    }
+
+    filterSpotifyData(spotifyData : any) {
+        let img_url = null;
+        if(spotifyData.images && spotifyData.images.length){
+            img_url = spotifyData.images[0].url;
+        }
+
+        return {
+            name: spotifyData.name,
+            img_url: img_url,
+            genres: spotifyData.genres
+        }
+    }
+
     async findArtist(query: string){
         try {
             await this.getToken();

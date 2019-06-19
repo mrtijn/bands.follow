@@ -1,14 +1,14 @@
 import {getRepository, Repository} from "typeorm";
-import * as hapi from 'hapi';
 import { User } from './User.entity';
 import Boom from '@hapi/boom';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { UserCredentials } from '../../interfaces';
+import { BaseContext } from 'koa';
 
 
-export default class UserController {
-    public async getAllUsers() {
+export default new class UserController {
+    public async getAllUsers(ctx: BaseContext) {
         const userRepo : Repository<User> = getRepository(User);
 
         const users  = await userRepo.find();
@@ -16,24 +16,24 @@ export default class UserController {
         return users;
     }
 
-    public async getSelf(req : hapi.Request): Promise<User> {
+    public async getSelf(ctx: BaseContext) {
         const userRepo : Repository<User> = getRepository(User);
-        const userCredentials = req.auth.credentials as UserCredentials;
+        const userCredentials = ctx.request.auth.credentials as UserCredentials;
 
         try {
             const user = await userRepo.findOne({
                 id: userCredentials.id
             }) as User;
 
-            return user;
+            ctx.body = user;
         } catch (error) {
             throw error;
         }
     }
 
-    public async createUser(req: hapi.Request) {
+    public async createUser(ctx: BaseContext) {
         const userRepo : Repository<User> = getRepository(User);
-        const payload = req.payload as User;
+        const payload = ctx.request.body as User;
 
         if(await userRepo.findOne({username: payload.username})) throw Boom.conflict('User already exists');
 
@@ -43,14 +43,14 @@ export default class UserController {
 
         await userRepo.save(user);
         const token = await this.createToken(user);
-        return {
+        ctx.body = {
             token: token
         };
     }
 
-    public async loginUser(req: hapi.Request) {
+    public async loginUser(ctx: BaseContext) {
         const userRepo : Repository<User> = getRepository(User);
-        const payload = req.payload as {
+        const payload = ctx.request.body as {
             username: string,
             password: string
         };
@@ -70,13 +70,13 @@ export default class UserController {
         if(!passwordValid) throw Boom.forbidden('Password incorrect!');
 
         const token = await this.createToken(user);
-        return {
+        ctx.body = {
             token: token
         };
 
     }
 
-    public async validateUser(decoded: any, request: hapi.Request){
+    public async validateUser(decoded: any, request: Request){
         const userRepo : Repository<User> = getRepository(User);
 
         const foundUser  = await userRepo.find({
@@ -113,7 +113,7 @@ export default class UserController {
         //   scopes = 'admin';
         // }
         // Sign the JWT
-        return jwt.sign({ id: user.id, username: user.username, scope: scopes }, SECRET, { algorithm: 'HS256', expiresIn: "1h" } );
+        return jwt.sign({ id: user.id, username: user.username, scope: scopes }, SECRET, { algorithm: 'HS256', expiresIn: "7d" } );
     }
 
     private verifyToken(token: string) {

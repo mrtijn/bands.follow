@@ -28,6 +28,19 @@ class Concert extends React.Component {
             <div>
                 <h4>{concert.name}</h4>
                 <span>{concert.location && concert.location.name}</span>
+
+                <ul>
+                    {concert.artists && concert.artists.map((artist) => {
+                        return (
+                            <li key={artist.id}>
+                                <figure>
+                                    <img src={artist.spotify_data.images[0].url} alt={artist.name}/>
+                                    <figcaption>{artist.name}</figcaption>
+                                </figure>
+                            </li>
+                        )
+                    })}
+                </ul>
             </div>
         )
     }

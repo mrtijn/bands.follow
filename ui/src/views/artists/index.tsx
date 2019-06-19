@@ -36,12 +36,12 @@ class Artists extends React.Component {
             <li key={artist.id} className="artist">
                 <div className="artist__inner">
                     <figure>
-                        <img src={artist.spotify_data.images[0].url} alt={artist.name} />
+                        <img src={artist.data.img_url} alt={artist.name} />
                     </figure>
                     <div className="artist__detail">
                         <strong>{artist.name}</strong>
                         <ul className="artist__genre-list">
-                        { artist.spotify_data.genres.map((genre : any) => <li key={genre}>{genre}</li>) }
+                        { artist.data.genres.map((genre : any) => <li key={genre}>{genre}</li>) }
                         </ul>
                         <button className="btn btn--white">Go to artist</button>
                     </div>

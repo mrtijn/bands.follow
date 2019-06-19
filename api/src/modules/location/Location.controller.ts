@@ -1,18 +1,18 @@
 import {getRepository, Repository, In} from "typeorm";
-import * as hapi from 'hapi';
-import Boom from '@hapi/boom';
 import { Location } from './Location.entity';
+import { BaseContext } from 'koa';
 
 
 
 
-export default class ArtistController {
-    public async getAllLocations(): Promise<Array<Location>> {
+export default new class LocationController {
+    public async getAllLocations(ctx : BaseContext) {
+
         const locationRepo : Repository<Location> = getRepository(Location);
 
-        const concerts  = await locationRepo.find();
+        const locations  = await locationRepo.find();
 
-        return concerts;
+        ctx.body = locations;
     }
 
 }

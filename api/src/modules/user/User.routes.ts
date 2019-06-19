@@ -1,45 +1,39 @@
-import hapi from '@hapi/hapi';
+
+import Router from 'koa-joi-router';
 import UserController from './User.controller';
 import * as UserValidations from './User.validations';
-export default function(server: hapi.Server){
-    const userController = new UserController();
 
-    // bind this to all usercontroller methods
-    server.bind(userController);
+const router = Router();
 
-    server.route([
-        {
-            method: 'GET',
-            path: '/user/all',
-            handler:  userController.getAllUsers,
-        },
-        {
-            method: 'GET',
-            path: '/user/self',
-            handler: userController.getSelf
-        },
-        {
-            method: 'POST',
-            path: '/user/login',
-            handler: userController.loginUser,
-            options: {
-                auth: false,
-                validate: {
-                    payload: UserValidations.loginUserDto
-                },
-            }
-        },
-        {
-            method: 'POST',
-            path: '/user/register',
-            handler: userController.createUser,
-            options: {
-                auth: false,
-                validate: {
-                    payload: UserValidations.createUserDto
-                },
-            }
-        },
-      ]);
-}
+router.route([
+    {
+        method: 'GET',
+        path: '/user/all',
+        handler: (ctx) => UserController.getAllUsers(ctx),
+    },
+    {
+        method: 'GET',
+        path: '/user/self',
+        handler:  (ctx) => UserController.getSelf(ctx)
+    },
+    {
+        method: 'POST',
+        path: '/user/login',
+        handler:  (ctx) => UserController.loginUser(ctx),
+        validate: {
+            body: UserValidations.loginUserDto,
+            type: 'json'
+        }
+    },
+    {
+        method: 'POST',
+        path: '/user/register',
+        handler: (ctx) => UserController.createUser(ctx),
+        validate: {
+            body: UserValidations.createUserDto,
+            type: 'json'
+        }
+    },
+  ]);
 
+export default router;

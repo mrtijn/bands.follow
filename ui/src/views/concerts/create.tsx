@@ -20,6 +20,8 @@ class CreateConcert extends React.Component {
     constructor(props: any) {
         super(props);
         this.createConcert = this.createConcert.bind(this);
+        this.getLocationsOptions();
+        // this.getArtistsOptions();
     }
 
     onChange = (e: any) => this.setState({ [e.target.name]: e.target.value });
@@ -44,7 +46,6 @@ class CreateConcert extends React.Component {
 
         e.preventDefault();
 
-        console.log(this.state.form);
         try {
             await api.createConcert(this.state.form);
             alert('Concert created!');
@@ -53,14 +54,21 @@ class CreateConcert extends React.Component {
             alert(error);
         }
     }
-    async getArtistsOptions(){
+
+    async getArtistsOptions(query){
         try {
-            const artists = await api.getArtists();
+            let artists;
+            if(query) {
+                artists = await api.searchArtist(query);
+            } else{
+                artists = await api.getArtists();
+            }
+
             const options : Array<selectOption> = [];
 
             artists.forEach((artist) => {
                 const option : any = {};
-                option.value = artist.id;
+                option.value = artist.spotify_id || artist.id;
                 option.label = artist.name;
                 options.push(option);
             });
@@ -105,10 +113,11 @@ class CreateConcert extends React.Component {
                         className="c-input c-input--text c-input--date"
                     />
                     <AsyncSelect
+                        loadOptions={this.getLocationsOptions}
+                        isSearchable={false}
+                        onChange={e => form.location = e.value}
                         cacheOptions
                         defaultOptions
-                        loadOptions={this.getLocationsOptions}
-                        onChange={e => form.location = e.value}
                         name="location"
                         className="c-input c-input--select"
                         placeholder="Select location.."
@@ -116,10 +125,10 @@ class CreateConcert extends React.Component {
                     <AsyncSelect
                         isMulti
                         cacheOptions
-                        defaultOptions
                         className="c-input c-input--select"
-                        onChange={e => form.artists = e.map((artist) => artist.value)}
+                        onChange={(e) => e ? form.artists = e.map((artist) => artist.value) : false}
                         name="artists"
+                        defaultOptions
                         loadOptions={this.getArtistsOptions}
                         placeholder="Select artist(s).."
                     />

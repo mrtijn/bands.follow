@@ -1,42 +1,50 @@
-import hapi from '@hapi/hapi';
-import ArtistController from "./Artist.controller";
+import Router from 'koa-joi-router';
+const router = Router();
+import Controller from "./Artist.controller";
 import * as ArtistValidations from "./Artist.validations";
-export default function(server: hapi.Server){
-    const artistController = new ArtistController();
 
-    // Bind functions
-    server.bind(artistController);
+const ArtistController = new Controller();
 
-    server.route([
-        {
-          method: "GET",
-          path: "/artists/all",
-          handler: artistController.getAllArtist
-        },
-        {
-          method: "GET",
-          path: "/artist/{id}",
-          handler: artistController.getArtistById
-        },
-        {
-          method: "POST",
-          path: "/artist/create",
-          handler: artistController.createArtist,
-          options: {
-            validate: {
-              payload: ArtistValidations.createArtist
-            }
-          }
-        },
-        {
-          method: "GET",
-          path: "/artist/search",
-          handler: artistController.findArtist,
-          options: {
-            validate: {
-              query: ArtistValidations.searchArtist
-            }
-          }
-        }
-      ]);
+router.get('/artists/all',  (ctx) => ArtistController.getAllArtists(ctx));
+
+router.get('/artist/{id}', (ctx) => ArtistController.getArtistById(ctx));
+
+router.post('/artist/create', (ctx) => ArtistController.createArtist(ctx));
+
+router.get('/artist/search', (ctx) => ArtistController.findArtist(ctx));
+
+
+router.route( [{
+  method: "GET",
+  path: "/artists/all",
+  handler: (ctx) => ArtistController.getAllArtists(ctx)
+},
+{
+  method: "GET",
+  path: "/artist/:id",
+  handler: (ctx) => ArtistController.getArtistById(ctx)
+},
+{
+  method: "POST",
+  path: "/artist/create",
+  handler:  (ctx) => ArtistController.createArtist(ctx),
+  validate: {
+    body: ArtistValidations.createArtist,
+    type: 'json'
+  }
+},
+{
+  method: "GET",
+  path: "/artist/search",
+  handler: (ctx) => ArtistController.findArtist(ctx),
+  validate: {
+    params: ArtistValidations.searchArtist
+  }
 }
+]);
+
+
+
+
+
+export default router;

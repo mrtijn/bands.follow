@@ -1,26 +1,29 @@
 import {getRepository, Repository, In} from "typeorm";
-import * as hapi from 'hapi';
 import Boom from '@hapi/boom';
 import { Concert } from './Concert.entity';
 import { Location } from '../location/Location.entity';
 import { Artist } from '../artist/Artist.entity';
+import SpotifyService from '../../services/spotify';
+import { BaseContext } from 'koa';
+import ArtistController from '../artist/Artist.controller';
+import ArtistService from '../artist/Artist.service';
 
 
-
-export default class ArtistController {
-    public async getAllConcerts(): Promise<Array<Concert>> {
+export default new class ConcertController {
+    spotifyService = new SpotifyService();
+    public async getAllConcerts(ctx: BaseContext) {
         const concertRepo : Repository<Concert> = getRepository(Concert);
 
         const concerts  = await concertRepo.find({
             relations: ['artists', 'location']
         });
 
-        return concerts;
+        ctx.body = concerts;
     }
 
-    public async getConcertById(req: hapi.Request)  {
+    public async getConcertById(ctx: BaseContext)  {
         const concertRepo : Repository<Concert> = getRepository(Concert);
-        const id = req.params.id;
+        const id = ctx.params.id;
 
 
         const concert : any = await concertRepo.findOne(id, {
@@ -29,17 +32,22 @@ export default class ArtistController {
 
         if(!concert) return Boom.notFound('Artist not found');
 
-        return concert;
+        const addSpotifyData = concert.artists.map(async (artist: any) => {
+            artist.spotify_data = await this.spotifyService.getArtistById(artist.spotify_id);
+        });
+        await Promise.all(addSpotifyData);
+
+        ctx.body = concert;
     }
 
-    public async createConcert(req: hapi.Request) {
+    public async createConcert(ctx: BaseContext) {
         const concertRepo : Repository<Concert> = getRepository(Concert);
         const artistRepo : Repository<Artist> = getRepository(Artist);
         const locationRepo : Repository<Location> = getRepository(Location);
 
-        const payload = req.payload as {
+        const payload = ctx.request.body as {
             name: string,
-            artists: Array<Artist>
+            artists: Array<string>
             location: number
         };
 
@@ -53,12 +61,34 @@ export default class ArtistController {
         concert.location = location;
 
         // Get artists Objects
-        concert.artists =  await artistRepo.find({
-            where: { id: In(payload.artists) }
+        const artistArray: Array<Artist> = [];
+        payload.artists.forEach( async (artistSpotifyId) => {
+            console.log(artistSpotifyId);
+
+            const artistExists = await artistRepo.findOne({
+                where: { spotify_id : artistSpotifyId}
+            });
+
+            if(artistExists){
+                artistArray.push(artistExists);
+            }else {
+                const artist = await ArtistService.createArtist(artistSpotifyId);
+
+                if(artist){
+                    artistArray.push(artist);
+                }
+
+            }
         });
+        concert.artists = artistArray;
+
+        concert.artists =  await artistRepo.find({
+            where: { spotify_id: In(payload.artists) }
+        });
+
 
         await concertRepo.save(concert);
 
-        return concert;
+        ctx.body = concert;
     }
 }

@@ -1,59 +1,46 @@
-import {getRepository, Repository} from "typeorm";
-import * as hapi from 'hapi';
-import { Artist } from './Artist.entity';
+
+// import { Artist } from './Artist.entity';
 import Boom from '@hapi/boom';
-import SpotifyService from '../../services/spotify';
+
+import { BaseContext } from 'koa';
+import ArtistService from './Artist.service';
 
 export default class ArtistController {
-    spotifyService = new SpotifyService();
+    public async getAllArtists(ctx: BaseContext) {
 
-    public async getAllArtist(): Promise<Array<Artist>> {
-        const artistRepo : Repository<Artist> = getRepository(Artist);
-        const artists  = await artistRepo.find();
-        const addSpotifyData = artists.map(async (artist: any) => {
-            console.log(artist.spotify_id);
-            artist.spotify_data = await this.spotifyService.getArtistById(artist.spotify_id);
-        })
-        await Promise.all(addSpotifyData);
+        const artists = await ArtistService.getArtists({
+            spotify_data: true
+        });
 
-        return artists;
+        ctx.body =  artists;
     }
 
-    public async getArtistById(req: hapi.Request)  {
-        const artistRepo : Repository<Artist> = getRepository(Artist);
-        const id = req.params.id;
+    public async getArtistById(ctx: BaseContext)  {
+        const id = ctx.params.id;
 
-        const artist : any =
-            await artistRepo.findOne(id,
-                {
-                    relations: ['concerts']
-                }
-            );
+        const artist = await ArtistService.getArtist(id, {
+            spotify_data : true
+        });
 
         if(!artist) throw Boom.notFound('Artist not found');
 
-        artist.spotify_data = await this.spotifyService.getArtistById(artist.spotify_id);
-
-        return artist;
+        ctx.body = artist;
     }
 
 
-    public async createArtist(req: hapi.Request) {
-        const artistRepo : Repository<Artist> = getRepository(Artist);
-        const payload = req.payload as Artist;
+    public async createArtist(ctx: BaseContext) {
 
-        if(await artistRepo.findOne({name: payload.name})) throw Boom.conflict('Artist already exists');
+        const spotify_id = ctx.request.body as string;
 
-        const artist : Artist  = await artistRepo.create(payload);
+        const artist = await ArtistService.createArtist(spotify_id);
 
-        await artistRepo.save(artist);
-
-        return artist;
+        ctx.body = artist;
     }
 
-    public async findArtist(req: hapi.Request) {
-        const searchQuery = req.query.searchQuery as string;
-        const searchResult = this.spotifyService.findArtist(searchQuery);
-        return searchResult;
+    public async findArtist(ctx: BaseContext) {
+        const searchQuery = ctx.query.searchQuery as string;
+
+        const searchResult = await ArtistService.searchArtist(searchQuery);
+        ctx.body =  searchResult;
     }
 }

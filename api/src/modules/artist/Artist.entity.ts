@@ -1,5 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable} from "typeorm";
 import { Concert } from '../concert/Concert.entity';
+import { SpotifyData } from '../../services/spotify/spotify.model';
 
 @Entity()
 export class Artist {
@@ -16,4 +17,7 @@ export class Artist {
     @Column()
     spotify_id!: string;
 
+    data!: SpotifyData
+
 }
+

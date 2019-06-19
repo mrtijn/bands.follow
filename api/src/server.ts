@@ -1,17 +1,20 @@
-import hapi from "@hapi/hapi";
 require('dotenv').config();
+import Koa from 'koa';
+import logger from 'koa-logger';
+import json from "koa-json";
+import jwt from 'koa-jwt';
+import bodyParser from "koa-bodyparser";
+import cors from '@koa/cors';
+import errorHandler from 'koa-better-error-handler';
 import "reflect-metadata";
 import db from './db';
-import Good from '@hapi/good';
 
-import hapiAuthJwt2 from 'hapi-auth-jwt2';
 
-import UserController from './modules/user/User.controller';
-
-import * as artistModule from './modules/artist';
-import * as concertModule from './modules/concert';
-import * as userModule from './modules/user';
-import * as locationsModule from './modules/location';
+import artistModule from './modules/artist';
+import concertModule from './modules/concert';
+import userModule from './modules/user';
+import locationsModule from './modules/location';
+// import ConcertController from './modules/concert/Concert.controller';
 
 // Catch unhandling unexpected exceptions
 process.on("uncaughtException", (error: Error) => {
@@ -24,72 +27,47 @@ process.on("unhandledRejection", (reason: any) => {
 });
 
 
-const createServer = async() => {
+const createApp = async() => {
 
   // init the DB
   await new db().init();
 
   // create a server with a host and port
-  const server: hapi.Server = new hapi.Server({
-    port: process.env.PORT,
-    routes: {
-      cors: true
-    }
-  });
+  const app = new Koa();
 
-  await server.register(hapiAuthJwt2);
+  // Use koa-better-error-handling
+  app.context.onerror = errorHandler;
 
-  server.auth.strategy('jwt', 'jwt',
-  { key: process.env.APP_SECRET,          // Never Share your secret key
-    validate: new UserController().validateUser,            // validate function defined above
-    verifyOptions: { algorithms: [ 'HS256' ] } // pick a strong algorithm
-  });
+  // Middlewares
+  app
+  .use(cors())
+  .use(json())
+  .use(logger())
+  .use(bodyParser())
+  .use(
+    jwt({ secret: process.env.APP_SECRET as string })
+    .unless({
+      path: [/\/user\/login/]
+    })
+  )
 
-  server.auth.default('jwt');
+  // Modules
+  app
+  .use(userModule.middleware())
+  .use(artistModule.middleware())
+  .use(concertModule.middleware())
+  .use(locationsModule.middleware());
 
-  const options = {
-      ops: {
-          interval: 1000
-      },
-      reporters: {
-          consoleReporter: [
-              {
-                  module: '@hapi/good-squeeze',
-                  name: 'Squeeze',
-                  args: [{
-                    error: "*",
-                    log: "*",
-                    response: "*",
-                    request: "*"
-                  }]
-              },
-              {
-                  module: '@hapi/good-console'
-              },
-              'stdout'
-          ]
-      }
-  };
 
-  await server.register({
-      plugin: Good,
-      options,
-  });
-
-  artistModule.init(server);
-  concertModule.init(server);
-  userModule.init(server);
-  locationsModule.init(server);
-
-  return server;
+  return app;
 }
 
 const startServer = async () => {
   try {
-    const server = await createServer();
+    const server = await createApp();
 
-    await server.start()
-    console.log('Server running at:', server.info.uri);
+    await server.listen(5000, () => console.log(`✅  The server is running at http://localhost:5000/`));
+
   } catch (err) {
     console.log(err);
     process.exit(1);
@@ -97,3 +75,5 @@ const startServer = async () => {
 }
 
 startServer();
+
+
