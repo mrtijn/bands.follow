@@ -18,6 +18,16 @@ export default new class ConcertController {
             relations: ['artists', 'location']
         });
 
+
+        concerts.map( async (concert) => {
+            const addSpotifyData = concert.artists.map(async (artist: Artist) => {
+                artist.data = await this.spotifyService.enrichArtistData(artist.spotify_id)
+
+                return artist;
+            });
+            await Promise.all(addSpotifyData);
+            return concert;
+        });
         ctx.body = concerts;
     }
 
@@ -25,17 +35,19 @@ export default new class ConcertController {
         const concertRepo : Repository<Concert> = getRepository(Concert);
         const id = ctx.params.id;
 
-
         const concert : any = await concertRepo.findOne(id, {
             relations: ['artists', 'location']
         });
 
         if(!concert) return Boom.notFound('Artist not found');
 
-        const addSpotifyData = concert.artists.map(async (artist: any) => {
-            artist.spotify_data = await this.spotifyService.getArtistById(artist.spotify_id);
+
+        const addSpotifyData = concert.artists.map(async (artist: Artist) => {
+            artist.data = await this.spotifyService.enrichArtistData(artist.spotify_id)
         });
+
         await Promise.all(addSpotifyData);
+
 
         ctx.body = concert;
     }
@@ -63,23 +75,23 @@ export default new class ConcertController {
         // Get artists Objects
         const artistArray: Array<Artist> = [];
         payload.artists.forEach( async (artistSpotifyId) => {
-            console.log(artistSpotifyId);
 
             const artistExists = await artistRepo.findOne({
-                where: { spotify_id : artistSpotifyId}
+                where: { spotify_id : artistSpotifyId }
             });
 
             if(artistExists){
                 artistArray.push(artistExists);
             }else {
-                const artist = await ArtistService.createArtist(artistSpotifyId);
 
+                const artist = await ArtistService.createArtist(artistSpotifyId);
                 if(artist){
                     artistArray.push(artist);
                 }
 
             }
         });
+
         concert.artists = artistArray;
 
         concert.artists =  await artistRepo.find({

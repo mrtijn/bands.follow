@@ -1,7 +1,7 @@
 import React from 'react';
 import './artists.scss';
 import api from '../../services/api.service';
-
+import ArtistItem from '../../components/artist/artist-item';
 const initialState = {
     artists: [],
     searchQuery: '',
@@ -32,24 +32,7 @@ class Artists extends React.Component {
     }
 
     renderArtists(){
-        return this.state.artists.map((artist: any) =>
-            <li key={artist.id} className="artist">
-                <div className="artist__inner">
-                    <figure>
-                        <img src={artist.data.img_url} alt={artist.name} />
-                    </figure>
-                    <div className="artist__detail">
-                        <strong>{artist.name}</strong>
-                        <ul className="artist__genre-list">
-                        { artist.data.genres.map((genre : any) => <li key={genre}>{genre}</li>) }
-                        </ul>
-                        <button className="btn btn--white">Go to artist</button>
-                    </div>
-
-                </div>
-
-            </li>
-        )
+        return this.state.artists.map((artist: any) => <ArtistItem key={artist.id} artist={artist}></ArtistItem>);
     }
 
     async handleSearch(e: React.FormEvent){
@@ -92,9 +75,9 @@ class Artists extends React.Component {
                 <ul>
                     {this.renderSearchResults()}
                 </ul>
-                <ul >
+                <div className="c-artist__list">
                     {this.renderArtists()}
-                </ul>
+                </div>
             </div>
         )
     }

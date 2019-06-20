@@ -1,7 +1,7 @@
 import React from 'react';
 import './concerts.scss';
 import api from '../../services/api.service';
-
+import ArtistItem from '../../components/artist/artist-item';
 const initialState = {
     concert: {}
 }
@@ -16,6 +16,7 @@ class Concert extends React.Component {
     async getConcert(id: string){
         try {
             const concert = await api.getConcert(id);
+
             this.setState({concert: concert})
         } catch (error) {
             console.error(error);
@@ -28,23 +29,12 @@ class Concert extends React.Component {
             <div>
                 <h4>{concert.name}</h4>
                 <span>{concert.location && concert.location.name}</span>
-
-                <ul>
-                    {concert.artists && concert.artists.map((artist) => {
-                        return (
-                            <li key={artist.id}>
-                                <figure>
-                                    <img src={artist.spotify_data.images[0].url} alt={artist.name}/>
-                                    <figcaption>{artist.name}</figcaption>
-                                </figure>
-                            </li>
-                        )
-                    })}
-                </ul>
+                <div className="c-concert-detail__artists">
+                    {concert.artists && concert.artists.length && concert.artists.map((artist) => <ArtistItem key={artist.id} artist={artist}></ArtistItem>)}
+                </div>
             </div>
         )
     }
-
     render() {
         return (
             <div>{ this.renderConcert() }</div>

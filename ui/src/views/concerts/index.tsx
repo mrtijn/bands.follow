@@ -11,7 +11,7 @@ class Concerts extends Component {
         super(props);
         this.getConcerts();
     }
-    async getConcerts(){
+    async getConcerts() {
         try {
             const concerts = await api.getConcerts();
             this.setState({ concerts : concerts });
@@ -22,7 +22,7 @@ class Concerts extends Component {
 
     renderConcerts() {
         return this.state.concerts.map((concert: any) =>
-            <li key={concert.id}>
+            <li key={concert.id} >
                 <Link to={`/concert/${concert.id}`} >
                     <strong>{concert.name}</strong>
                     <span>{concert.location && concert.location.name}</span>
@@ -30,6 +30,7 @@ class Concerts extends Component {
             </li>
         );
     }
+
     render() {
         return(
             <div className="c-concerts">

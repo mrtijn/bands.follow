@@ -20,8 +20,6 @@ class CreateConcert extends React.Component {
     constructor(props: any) {
         super(props);
         this.createConcert = this.createConcert.bind(this);
-        this.getLocationsOptions();
-        // this.getArtistsOptions();
     }
 
     onChange = (e: any) => this.setState({ [e.target.name]: e.target.value });
