@@ -26,9 +26,19 @@ class Concert extends React.Component {
     renderConcert(){
         const concert : any = this.state.concert;
         return (
-            <div>
-                <h4>{concert.name}</h4>
-                <span>{concert.location && concert.location.name}</span>
+            <div className="c-concert-detail">
+                {
+                    concert.instagram_photo_id ? (
+                        <div className="c-concert-detail__backdrop" style={{
+                            backgroundImage: `url(https://instagram.com/p/${concert.instagram_photo_id}/media/?size=l)`
+                        }}></div>
+                    ) : ''
+                }
+                <div className="c-concert-detail__header">
+                    <h1>{concert.name}</h1>
+                    <h4>{concert.location && concert.location.name}</h4>
+                </div>
+
                 <div className="c-concert-detail__artists">
                     {concert.artists && concert.artists.length && concert.artists.map((artist) => <ArtistItem key={artist.id} artist={artist}></ArtistItem>)}
                 </div>
@@ -37,7 +47,9 @@ class Concert extends React.Component {
     }
     render() {
         return (
-            <div>{ this.renderConcert() }</div>
+            <div>
+                { this.renderConcert() }
+            </div>
         )
     }
 }

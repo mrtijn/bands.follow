@@ -9,7 +9,8 @@ const initialState = {
         name: '',
         location: '',
         date: '',
-        artists: []
+        artists: [],
+        instagram_photo_id: ''
     }
 }
 type State = Readonly<typeof initialState>;
@@ -101,13 +102,13 @@ class CreateConcert extends React.Component {
             <div className="c-create-concert">
                 <h3>Concert aanmaken</h3>
                 <form onSubmit={this.createConcert}>
-
                     <input type="text" className="c-input c-input--text" placeholder="Concert name" name="name" value={this.state.form.name} onChange={this.onFormChange} required/>
                     <DatePicker
                         selected={form.date}
                         onChange={this.onChangeDate}
                         name="date"
-                        placeholder="Selecteer datum"
+                        placeholderText="Selecteer datum"
+                        autoComplete="off"
                         className="c-input c-input--text c-input--date"
                     />
                     <AsyncSelect
@@ -128,8 +129,10 @@ class CreateConcert extends React.Component {
                         name="artists"
                         defaultOptions
                         loadOptions={this.getArtistsOptions}
-                        placeholder="Select artist(s).."
+                        placeholder="Select or search artist(s).."
                     />
+                    <input type="text" className="c-input c-input--text" placeholder="Instagram photo id (eg. BzF6l5zBnJ7)" name="instagram_photo_id" value={this.state.form.instagram_photo_id} onChange={this.onFormChange} required/>
+
                     <button type="submit" className="c-btn c-btn--white">Add concert</button>
                 </form>
             </div>

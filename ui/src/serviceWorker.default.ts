@@ -26,7 +26,7 @@ type Config = {
 };
 
 export function register(config?: Config) {
-  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  // if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(
       (process as { env: { [key: string]: string } }).env.PUBLIC_URL,
@@ -53,13 +53,13 @@ export function register(config?: Config) {
             'This web app is being served cache-first by a service ' +
               'worker. To learn more, visit https://bit.ly/CRA-PWA'
           );
-        });
+        }).catch((e) => console.error(e));
       } else {
         // Is not localhost. Just register service worker
         registerValidSW(swUrl, config);
       }
     });
-  }
+  // }
 }
 
 function registerValidSW(swUrl: string, config?: Config) {

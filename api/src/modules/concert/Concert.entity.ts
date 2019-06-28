@@ -10,6 +10,9 @@ export class Concert {
     @Column()
     name!: string;
 
+    @Column()
+    instagram_photo_id!: string;
+
     @Column({ type: 'datetime', nullable: true })
     date!: Date;
 

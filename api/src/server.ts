@@ -4,6 +4,8 @@ import logger from 'koa-logger';
 import json from "koa-json";
 import jwt from 'koa-jwt';
 import bodyParser from "koa-bodyparser";
+import etag from 'koa-etag';
+import conditional from 'koa-conditional-get';
 import cors from '@koa/cors';
 import errorHandler from 'koa-better-error-handler';
 import "reflect-metadata";
@@ -40,10 +42,14 @@ const createApp = async() => {
 
   // Middlewares
   app
-  .use(cors())
+  .use(cors({
+    exposeHeaders: 'eTag'
+  }))
   .use(json())
   .use(logger())
   .use(bodyParser())
+  .use(conditional())
+  .use(etag())
   .use(
     jwt({ secret: process.env.APP_SECRET as string })
     .unless({

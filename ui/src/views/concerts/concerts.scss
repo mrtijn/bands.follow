@@ -1,22 +1,21 @@
+@import '../../styles/_variables';
 .c-concerts {
-    display: flex;
-    flex-direction: column;
-
 
     ul {
         padding: 0;
-        max-width: 960px;
         width: 100%;
         margin: 0 auto;
         list-style: none;
+        margin-top: 40px;
         li {
-            margin-bottom: 10px;
+            // margin-bottom: 25px;
+
             a {
                 text-decoration: none;
             }
             strong{
                 color: #FFF;
-                font-size: 32px;
+                font-size: 28px;
                 font-weight: 700;
                 text-transform: capitalize;
 
@@ -27,24 +26,128 @@
             }
         }
     }
+
+    .c-page-header{
+        padding-bottom: 10px;
+        &__actions{
+            justify-content: space-between;
+        }
+        input {
+            background-color: transparent;
+            width: 100%;
+            font-size: 18px;
+            color: #FFF;
+            &:focus{
+                outline: 0;
+            }
+        }
+    }
+
+    .c-concert-item {
+        display: flex;
+        letter-spacing: -1px;
+        opacity: 0.7;
+        transition: all 0.2s ease-out;
+        transform-origin: center;
+        padding: 15px 0;
+        &__backdrop {
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0;
+            transition: 0.5s ease-out;
+        }
+        &__date {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 21px;
+            margin-right: 10px;
+
+            min-width: 40px;
+            margin-top: -5px;
+            span{
+                font-size: 24px;
+                display: block;
+
+            }
+        }
+
+        &__info{
+            line-height: 25px;
+        }
+
+
+
+        &:hover {
+            opacity: 1;
+
+            .c-concert-item__backdrop {
+                opacity: 0.3;
+            }
+        }
+    }
 }
 
+
+
 .c-concert-detail{
+    h1 {
+        font-weight: 700;
+        margin: 0;
+    }
+
+    h4{
+        color: $primary-color;
+        font-weight: 300;
+        margin: 0;
+    }
+
+
+
+    &__backdrop {
+        height: 100vh;
+        width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-size: cover;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.3;
+    }
+
+    &__header {
+        margin-bottom: 40px;
+    }
     &__artists {
         display: flex;
+    }
+
+    .c-btn {
+        display: block;
     }
 }
 
 .c-create-concert {
-    max-width: 960px;
-    margin: 0 auto;
-    h3 {
-        font-weight: 300;
+    // margin: 0 auto;
+    .c-input {
+        width: 100%;
     }
 
-    form {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
 
+
+    form {
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows:  min-content min-content min-content min-content min-content;
+        column-gap: 10px;
+        row-gap: 10px;
     }
 }

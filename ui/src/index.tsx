@@ -1,9 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as serviceWorker from './serviceWorker';
+
 import { BrowserRouter } from "react-router-dom";
 import App from './App';
 import './styles/base.scss';
+import localforage from 'localforage';
+import serviceworker from './sw';
+
+serviceworker.register();
+
+localforage.config({
+    driver      : localforage.INDEXEDDB, // Force WebSQL; same as using setDriver()
+    name        : 'bandfollowapp',
+    version     : 1.0,
+    size        : 4980736, // Size of database, in bytes. WebSQL-only for now.
+    storeName   : 'bandfollow', // Should be alphanumeric, with underscores.
+    description : 'the app which follows your band'
+});
+
+
 
 ReactDOM.render(
     <BrowserRouter>
@@ -12,7 +27,3 @@ ReactDOM.render(
     , document.getElementById('root')
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

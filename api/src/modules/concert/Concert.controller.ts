@@ -60,22 +60,39 @@ export default new class ConcertController {
         const payload = ctx.request.body as {
             name: string,
             artists: Array<string>
-            location: number
+            location: number,
+            date?: Date,
+            instagram_photo_id?: string
         };
 
         if(await concertRepo.findOne({name: payload.name})) throw Boom.conflict('Concert already exists');
 
+        // Create concert
         const concert = new Concert();
         concert.name = payload.name;
 
+        // Insert location
         const location = await locationRepo.findOne({id: payload.location});
         if(!location) throw Boom.notFound('Given location does not exist');
         concert.location = location;
 
+        // Insert date
+        if(payload.instagram_photo_id){
+            concert.instagram_photo_id = payload.instagram_photo_id;
+        }
+
+        // Insert date
+        if(payload.date){
+            const date = new Date(payload.date);
+            if(!date){
+                throw Boom.conflict('Date is invalid');
+            }
+            concert.date = date;
+        }
+
         // Get artists Objects
         const artistArray: Array<Artist> = [];
-        payload.artists.forEach( async (artistSpotifyId) => {
-
+        for(let artistSpotifyId of payload.artists){
             const artistExists = await artistRepo.findOne({
                 where: { spotify_id : artistSpotifyId }
             });
@@ -85,12 +102,13 @@ export default new class ConcertController {
             }else {
 
                 const artist = await ArtistService.createArtist(artistSpotifyId);
+
                 if(artist){
                     artistArray.push(artist);
                 }
 
             }
-        });
+        }
 
         concert.artists = artistArray;
 

@@ -2,8 +2,11 @@
 
 .c-input {
     font-size: 14px;
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
     font-family: system-ui;
+    display: inline-block;
+    border: 0;
+    letter-spacing: 0px;
     &--text {
         padding: 10px;
         border-radius: 5px;
@@ -16,4 +19,8 @@
     &--date {
         color: #000;
     }
+}
+
+.react-datepicker__input-container{
+    width: 100%;
 }

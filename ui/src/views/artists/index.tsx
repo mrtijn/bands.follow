@@ -66,7 +66,7 @@ class Artists extends React.Component {
 
     render() {
         return(
-            <div className="c-wrapper">
+            <div className="c-artist">
                 <strong>Add artist</strong>
                 <form onSubmit={this.handleSearch}>
                     <input type="text" placeholder="Artist" name="searchQuery" value={this.state.searchQuery} onChange={this.onChange}/>

@@ -76,12 +76,8 @@ export default class SpotifyService{
     }
     async getToken(){
         // Check if token is expired, otherwise don't get a new token;
-        if(this.expires_in instanceof Date){
-            console.log(this.expires_in.getTime() !> new Date().getTime() );
-            // console.log(this.expires_in !== null && this.expires_in.getTime());
-        }
 
-        if(this.expires_in instanceof Date && (new Date().getTime() !> this.expires_in.getTime())) return false;
+        if(this.expires_in instanceof Date && (new Date().getTime() <=  this.expires_in.getTime())) return false;
 
         const authOptions = {
             url: 'https://accounts.spotify.com/api/token',

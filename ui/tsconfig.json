@@ -22,7 +22,7 @@
     "noImplicitAny": false
   },
   "include": [
-    "src"
+    "src", "public/service-worker.js"
   ],
   "paths": {
     "@/*": ["src/*"]

@@ -17,6 +17,11 @@
         a {
             color: #FFF;
             font-weight: 700;
+            text-decoration: none;
+
+            span{
+                color: $primary-color;
+            }
         }
     }
     &__nav {

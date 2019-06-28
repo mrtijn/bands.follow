@@ -12,7 +12,7 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <HeaderComponent></HeaderComponent>
-      <main>
+      <main className="container main-container">
         <Switch>
           <Route exact path="/" component={Index} />
           <Route path="/artists" component={Artists} />

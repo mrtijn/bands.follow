@@ -1,0 +1,19 @@
+.c-page-header {
+    padding: 0px 0 20px 0;
+    border-bottom: 2px solid #FFF;
+    margin-bottom: 15px;
+
+    &__title {
+        h2 {
+            font-weight: 700;
+            font-size: 32px;
+            margin: 0;
+            margin-bottom: 40px;
+        }
+    }
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+}

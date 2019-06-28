@@ -17,6 +17,8 @@ const koa_logger_1 = __importDefault(require("koa-logger"));
 const koa_json_1 = __importDefault(require("koa-json"));
 const koa_jwt_1 = __importDefault(require("koa-jwt"));
 const koa_bodyparser_1 = __importDefault(require("koa-bodyparser"));
+const koa_etag_1 = __importDefault(require("koa-etag"));
+const koa_conditional_get_1 = __importDefault(require("koa-conditional-get"));
 const cors_1 = __importDefault(require("@koa/cors"));
 const koa_better_error_handler_1 = __importDefault(require("koa-better-error-handler"));
 require("reflect-metadata");
@@ -43,10 +45,14 @@ const createApp = () => __awaiter(this, void 0, void 0, function* () {
     app.context.onerror = koa_better_error_handler_1.default;
     // Middlewares
     app
-        .use(cors_1.default())
+        .use(cors_1.default({
+        exposeHeaders: 'eTag'
+    }))
         .use(koa_json_1.default())
         .use(koa_logger_1.default())
         .use(koa_bodyparser_1.default())
+        .use(koa_conditional_get_1.default())
+        .use(koa_etag_1.default())
         .use(koa_jwt_1.default({ secret: process.env.APP_SECRET })
         .unless({
         path: [/\/user\/login/]
