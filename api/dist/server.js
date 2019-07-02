@@ -46,7 +46,8 @@ const createApp = () => __awaiter(this, void 0, void 0, function* () {
     // Middlewares
     app
         .use(cors_1.default({
-        exposeHeaders: 'eTag'
+        exposeHeaders: 'eTag',
+        origin: '*'
     }))
         .use(koa_json_1.default())
         .use(koa_logger_1.default())

@@ -45,36 +45,9 @@ class Artists extends React.Component {
          }
     }
 
-    renderSearchResults(){
-        return this.state.searchResults.map((result: any) =>
-            <li key={result.id} onClick={() => this.createArtist(result)}>{result.name}</li>
-        )
-    }
-
-    async createArtist(artist: any){
-        const artistDto: any = {
-            name: artist.name,
-            spotify_id: artist.id
-        }
-        try {
-            await api.createArtist(artistDto);
-            alert('Artist created!');
-         } catch (error) {
-             console.error(error);
-         }
-    }
-
     render() {
         return(
             <div className="c-artist">
-                <strong>Add artist</strong>
-                <form onSubmit={this.handleSearch}>
-                    <input type="text" placeholder="Artist" name="searchQuery" value={this.state.searchQuery} onChange={this.onChange}/>
-                    <button type="submit">Zoeken</button>
-                </form>
-                <ul>
-                    {this.renderSearchResults()}
-                </ul>
                 <div className="c-artist__list">
                     {this.renderArtists()}
                 </div>

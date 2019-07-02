@@ -13,7 +13,6 @@ export default new class ConcertController {
     spotifyService = new SpotifyService();
     public async getAllConcerts(ctx: BaseContext) {
         const concertRepo : Repository<Concert> = getRepository(Concert);
-
         const concerts  = await concertRepo.find({
             relations: ['artists', 'location']
         });

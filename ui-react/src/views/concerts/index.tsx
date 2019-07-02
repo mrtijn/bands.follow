@@ -22,6 +22,7 @@ class Concerts extends Component {
     }
 
     renderConcerts() {
+        if(!this.state.concerts.length) return;
         return this.state.concerts.map((concert: any) =>
             <li key={concert.id} >
                 <Link to={`/concert/${concert.id}`} >

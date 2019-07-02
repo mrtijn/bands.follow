@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from './App';
 import './styles/base.scss';
 import localforage from 'localforage';
-import serviceworker from './sw';
+import * as serviceworker from './serviceWorker.default';
 
 serviceworker.register();
 

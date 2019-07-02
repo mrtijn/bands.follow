@@ -3,18 +3,50 @@ import localforage from 'localforage';
 const axiosInstance : AxiosInstance = axios.create({
     baseURL: 'http://localhost:5000',
     // timeout: 1000,
-    headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJtYXJ0aWpuIiwiaWF0IjoxNTU5NzQ1NTcwLCJleHAiOjE1NTk3NDkxNzB9.f6UJw7evlcyDYlILGNvYmy-xmQNd8RgbPkhLlGBe-Tw'
-    },
     validateStatus: function (status) {
         return status < 500; // Reject only if the status code is greater than or equal to 500
     }
 });
 
+async function fetchData(method, url, data = {}){
+    let config : any = {
+        method: method,
+        headers: {}
+    }
+
+    if(data) config.data = data;
+
+    requestInterceptor(config);
+
+    try {
+        let res = await fetch('http://localhost:5000' + url, {
+            withCredentials: true,
+            ...config
+        });
 
 
-axiosInstance.interceptors.request.use(async (config) => {
 
+        let data = await res.json();
+
+
+
+        responseInterceptor(res, data, res.url);
+
+        return data;
+
+    } catch(e) {
+        console.error(e);
+        return Promise.reject(e);
+    }
+}
+
+
+
+axiosInstance.interceptors.request.use(async (config) => requestInterceptor(config));
+axiosInstance.interceptors.response.use(async(config) => responseInterceptor(config, config.data, config.config.url));
+
+
+async function requestInterceptor(config){
     if(config.url !== '/user/login') {
         const token = window.localStorage.getItem('token');
 
@@ -22,38 +54,37 @@ axiosInstance.interceptors.request.use(async (config) => {
         config.headers['Authorization'] = `Bearer ${token}`;
     }
 
-
-    // console.log();
     if(config.method === 'get'){
 
         const etag = await localforage.getItem(`${config.baseURL}${config.url}`);
         config.headers['if-None-Match'] = etag;
     }
-    // return 'jep';
+
     return config;
-})
+}
 
+async function responseInterceptor(res, data, url){
+    let etag = res.headers.etag || res.headers.get('etag');
 
-axiosInstance.interceptors.response.use(async(config) => {
-    let data = config.data;
-    const url : any = config.config.url;
-    if(config.headers.etag && !url.includes('user')){
-        if(config.status === 304) {
+    if(etag && !url.includes('user')){
+        if(res.status === 304) {
             try {
-                data = await localforage.getItem(config.headers.etag);
+                data = await localforage.getItem(etag);
             } catch (error) {
                 localforage.removeItem(url);
-                localforage.removeItem(config.headers.etag);
+                localforage.removeItem(etag);
                 throw error;
             }
         }else {
-            localforage.setItem(url, config.headers.etag);
-            localforage.setItem(config.headers.etag, config.data);
+            localforage.setItem(url, etag);
+            localforage.setItem(etag, data);
         }
     }
 
     return data;
-})
+}
+
+
 export default {
     /* User */
     async userLogin()  : Promise<{ token: string }>{
@@ -82,11 +113,13 @@ export default {
 
     /* Concerts */
     async getConcerts() : Promise<Array<any>> {
-        return await axiosInstance.get('/concerts/all');
+        return await fetchData('GET', '/concerts/all');
+        // return await axiosInstance.get('/concerts/all');
     },
 
     async getConcert(id: string) {
-        return await axiosInstance.get(`/concert/${id}`);
+        return await fetchData('GET', `/concert/${id}`);
+        // return await axiosInstance.get(`/concert/${id}`);
     },
 
     async createConcert(form) {

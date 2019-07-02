@@ -43,7 +43,8 @@ const createApp = async() => {
   // Middlewares
   app
   .use(cors({
-    exposeHeaders: 'eTag'
+    exposeHeaders: 'eTag',
+    origin: '*'
   }))
   .use(json())
   .use(logger())

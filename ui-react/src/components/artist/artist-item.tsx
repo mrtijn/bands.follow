@@ -3,7 +3,6 @@ import './artist.scss';
 
 
 const ArtistItem = (props) => {
-    console.log(props);
     return (
         <div className="c-artist-item">
             <div
