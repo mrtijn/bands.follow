@@ -45,7 +45,7 @@ async function fetchData(method, url, data = {}){
 axiosInstance.interceptors.request.use(async (config) => requestInterceptor(config));
 axiosInstance.interceptors.response.use(async(config) => responseInterceptor(config, config.data, config.config.url));
 
-
+let etagSend;
 async function requestInterceptor(config){
     if(config.url !== '/user/login') {
         const token = window.localStorage.getItem('token');
@@ -58,6 +58,7 @@ async function requestInterceptor(config){
 
         const etag = await localforage.getItem(`${config.baseURL}${config.url}`);
         config.headers['if-None-Match'] = etag;
+        etagSend = etag;
     }
 
     return config;
@@ -75,9 +76,10 @@ async function responseInterceptor(res, data, url){
                 localforage.removeItem(etag);
                 throw error;
             }
-        }else {
+        } else {
             localforage.setItem(url, etag);
             localforage.setItem(etag, data);
+            localforage.removeItem(etagSend);
         }
     }
 
